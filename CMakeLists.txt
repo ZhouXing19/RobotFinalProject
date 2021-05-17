@@ -14,7 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
-
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -72,9 +71,9 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-# DEPENDENCIES
-# std_msgs
+generate_messages(
+  DEPENDENCIES
+  std_msgs
 )
 
 ################################################
@@ -116,7 +115,6 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
