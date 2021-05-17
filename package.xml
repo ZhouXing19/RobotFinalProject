@@ -1,8 +1,8 @@
 <package format="2">
-    <name>Escapebots</name>
+    <name>escapebots</name>
     <version>0.0.0</version>
     <description>
-    Escapebots packages
+    escapebots packages
     </description>
     <maintainer email="zhouxing@uchicago.edu">Zhou Xing</maintainer>
     <license>MIT</license>
