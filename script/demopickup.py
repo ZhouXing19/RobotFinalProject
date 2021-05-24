@@ -22,7 +22,7 @@ HOLDING_DUCK = "holding duck"
 
 class demoPickUp(object):
 
-    def __init__(self， init_state=MOVED_TO_BASKET):
+    def __init__(self, init_state=MOVING_TO_BASKET):
 
         self.initialized = False
         rospy.init_node('demo_pickup')
