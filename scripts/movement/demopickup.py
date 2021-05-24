@@ -16,10 +16,13 @@ MOVING_TO_BASKET = "moving to basket"
 MOVED_TO_BASKET = "moved to basket"
 HOLDING_BASKET = "holding basket"
 PULLING_BACK = "pulling basket"
+MOVING_TO_DUCK = "moving to duck"
+MOVED_TO_DUCK = "moved to duck"
+HOLDING_DUCK = "holding duck"
 
 class demoPickUp(object):
 
-    def __init__(self, init_state=MOVING_TO_BASKET):
+    def __init__(self， init_state=MOVED_TO_BASKET):
 
         self.initialized = False
         rospy.init_node('demo_pickup')
@@ -46,7 +49,7 @@ class demoPickUp(object):
 
         self.scan_max = None
 
-        self.robot_status = MOVING_TO_BASKET
+        self.robot_status = init_state
 
         self.initialize_move_group()
 
@@ -57,6 +60,14 @@ class demoPickUp(object):
     def initialize_move_group(self):
         arm_joint_goal = [0.0, -0.65, 0.15, 0.5]
         gripper_joint_goal = [0.015, 0.015]
+        self.move_group_arm.go(arm_joint_goal, wait=True)
+        self.move_group_gripper.go(gripper_joint_goal, wait=True)
+        self.move_group_arm.stop()
+        self.move_group_gripper.stop()
+    
+    def grab_duck(self):
+        arm_joint_goal = [0.0, 0.65, -0.15, -0.5]
+        gripper_joint_goal = [-0.01, -0.01]
         self.move_group_arm.go(arm_joint_goal, wait=True)
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
         self.move_group_arm.stop()

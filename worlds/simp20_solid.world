@@ -228,6 +228,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
+
     <model name='arch_red'>
       <pose>-3 -2.5 0.2 1.5 0 1.5</pose>
       <static>1</static>
@@ -276,9 +277,157 @@
       </link>
     </model>
 
+    <model name='robot_dumbbell_red'>
+      <pose>-7 5.7 0.2 1.5 0 1.57</pose>
+      <static>0</static>
+      <link name='body'>
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>0.0006693535</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0001338707</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006693535</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_red.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_red.dae</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <model name='robot_dumbbell_blue'>
+      <pose>-7 6.7 0.2 1.5 0 1.57</pose>
+      <static>0</static>
+      <link name='body'>
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>0.0006693535</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0001338707</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006693535</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_blue.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_blue.dae</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <model name='robot_dumbbell_green'>
+      <pose>-7 7.7 0.2 1.5 0 1.57</pose>
+      <static>0</static>
+      <link name='body'>
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>0.0006693535</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0001338707</iyy>
+            <iyz>0</iyz>
+            <izz>0.0006693535</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_green.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_green.dae</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
     <model name='orange_basket'>
+<<<<<<< HEAD
       <pose>7 5.7 0.2 1.5 0 1.57</pose>
       
+=======
+      <pose> 7 5.7 0.2 1.5 0 1.57 </pose>
+>>>>>>> 93b5f08de33a64b8f3526b328345cb891677f397
       <static>0</static>
       <link name='body'>
         <inertial>
