@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
-  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2015-12-25T04:18:56Z</created><keywords></keywords><modified>2015-12-25T04:18:56Z</modified><revision></revision><subject></subject><title></title><unit meter="0.0170000" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
+  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2015-12-25T04:18:56Z</created><keywords></keywords><modified>2015-12-25T04:18:56Z</modified><revision></revision><subject></subject><title></title><unit meter="0.0215000" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_images>
     <image id="file_Basket_bump-image" name="file_Basket_bump"><init_from>file://D:/PJ/003Basket/TEXTURES/Basket_col.tga</init_from></image>
     <image id="file_Basket_spec-image" name="file_Basket_spec"><init_from>file://D:/PJ/003Basket/TEXTURES/Basket_spec.tga</init_from></image>

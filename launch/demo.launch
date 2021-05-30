@@ -15,7 +15,7 @@
   <arg name="second_tb3_yaw"   default=" 0.0"/>
 
   <arg name="first_tb3_type" default="waffle"/>
-  <arg name="second_tb3_type" default="waffle_pi"/>
+  <arg name="second_tb3_type" default="waffle"/>
 
   
   

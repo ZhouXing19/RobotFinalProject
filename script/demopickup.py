@@ -27,8 +27,8 @@ class demoPickUp(object):
         self.rb0_scan_sub = rospy.Subscriber("/scan", LaserScan, self.scan_callback)
         self.rb0_cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)
 
-        self.__goal_dist_in_front_basket = 0.12
-        self.__prop = 0.15
+        self.__goal_dist_in_front_basket = 0.24
+        self.__prop = 0.10
 
         # The interface to the group of joints making up the turtlebot3
         #   openmanipulator arm
@@ -48,26 +48,31 @@ class demoPickUp(object):
 
         self.robot_status = MOVING_TO_BASKET
 
-        self.initialize_move_group()
+        if self.initialized == False:
+            self.initialize_move_group()
 
         # Now everything is initialized
         self.initialized = True
 
     
     def initialize_move_group(self):
-        arm_joint_goal = [0.0, -0.65, 0.15, 0.5]
+        arm_joint_goal = [0.0, 0.65, 0.15, -0.8]
         gripper_joint_goal = [0.015, 0.015]
         self.move_group_arm.go(arm_joint_goal, wait=True)
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
         self.move_group_arm.stop()
         self.move_group_gripper.stop()
+        rospy.sleep(0.5)
 
     def grab_basket(self):
+        arm_joint_goal = [0.0, 0.05, -0.45, 0.4]
         gripper_joint_goal = [-0.01, -0.01]
+        self.move_group_arm.go(arm_joint_goal, wait=True)
+        self.move_group_arm.stop()
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
         self.move_group_gripper.stop()
         self.robot_status = HOLDING_BASKET
-        rospy.sleep(1)
+        rospy.sleep(1.5)
 
     def set_vel(self, diff_ang=0.0, diff_dist=float('inf')):
         """ Set the velocities of the robot """
@@ -108,7 +113,7 @@ class demoPickUp(object):
         self.pub_vel(self.rb0_cmd_vel_pub, 0.0, 0.0)
     
     def step_back(self):
-        self.pub_vel(self.rb0_cmd_vel_pub, 0.0, -0.1)
+        self.pub_vel(self.rb0_cmd_vel_pub, 0.0, -0.05)
         rospy.sleep(1)
 
 
@@ -139,14 +144,13 @@ class demoPickUp(object):
             rospy.sleep(1)
 
             self.robot_status = MOVED_TO_BASKET
-            self.grab_basket()
         else:
 
             ang_v, lin_v = self.set_vel(0, min_dist)
             self.pub_vel(self.rb0_cmd_vel_pub, ang_v, lin_v)
     
     def run(self):
-        r = rospy.Rate(5)
+        r = rospy.Rate(10)
 
         while not rospy.is_shutdown():
 
