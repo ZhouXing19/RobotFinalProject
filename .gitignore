@@ -130,3 +130,6 @@ dmypy.json
 
 # mp4 files
 /mp4
+
+# mac index file
+.DS_Store
