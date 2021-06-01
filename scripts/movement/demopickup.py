@@ -71,7 +71,7 @@ class demoPickUp(object):
         self.__goal_dist_in_front__db = 0.23
 
         self.__goal_dist_in_front_basket = 0.22
-        self.__prop = 0.15
+        self.__prop = 0.10
 
         rospy.sleep(3)
 
@@ -167,7 +167,7 @@ class demoPickUp(object):
         if diff_dist == float("inf"):
             print("=====I can't see it! Turning turning=====")
             ang_v = 0.15
-            lin_v = 0.0
+            lin_v = 0.05
         
         # Stop if the robot is in front of the dumbbell/block
         elif diff_dist < self.__goal_dist_in_front__db:
@@ -287,7 +287,7 @@ class demoPickUp(object):
             print(f"abs(err) / w : {abs(err) / w}")
 
             # If the color center is at the front
-            if abs(err) / w < 0.05:
+            if abs(err) / w < 0.09:
                 
                 min_dist = min(self.__scan_data[-10:] + self.__scan_data[:10])
 
@@ -319,7 +319,7 @@ class demoPickUp(object):
             else:
                 
                 # Define k_p for proportional control            
-                k_p = 1.0 / 1000.0
+                k_p = 1.0 / 2000.0
 
                 # Slowly turn the head, so that the color center 
                 #   would be at the center of the camera
@@ -336,12 +336,12 @@ class demoPickUp(object):
 
     
     def run(self):
-        r = rospy.Rate(5)
+        r = rospy.Rate(10)
 
         while not rospy.is_shutdown():
 
             if self.robot_status == MOVING_TO_BASKET:
-                self.move_to_dumbbell(color="red")
+                self.move_to_dumbbell(color="bear_red")
 
             
             r.sleep()
