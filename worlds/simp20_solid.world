@@ -422,8 +422,8 @@
       </link>
     </model>
 
-    <model name='container'>
-      <pose>7 5.7 0 1.5 -0 0</pose>
+    <model name='supporter'>
+      <pose>5 5.7 0 1.5 -0 0</pose>
       <static>0</static>
       <link name='body'>
         <inertial>
@@ -442,17 +442,14 @@
          <transparency>0</transparency>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/container_mine.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/supporter.dae</uri>
             </mesh>
           </geometry>
-              <material>
-              <script><name>Gazebo/RedTransparent</name></script>
-             </material>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/container_mine.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/supporter.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -479,7 +476,7 @@
     </model>
 
 
-    <model name='duck1'>
+    <model name='brown_bear'>
       <pose>7.5 7 0.2 1.5708 0 0.5</pose>
       <static>1</static>
       <link name='body'>
@@ -498,7 +495,7 @@
        
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/duck.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/bear_brown_hooked.dae</uri>
             </mesh>
           </geometry>
 
@@ -506,7 +503,7 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/duck.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/bear_brown_hooked.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -532,7 +529,7 @@
       </link>
     </model>
 
-    <model name='bear'>
+    <model name='white_bear'>
       <pose>8 7 0.2 1.5708 0 0.5</pose>
       <static>1</static>
       <link name='body'>
@@ -548,16 +545,17 @@
           </inertia>
         </inertial>
         <visual name='visual'>
+        <transparency>0</transparency>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/bear.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/bear_white_hooked.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/bear.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/bear_white_hooked.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -580,7 +578,7 @@
       </link>
     </model>
 
-    <model name='elephant'>
+    <model name='pink_bear'>
       <pose>8.5 7 0.2 1.5708 0 0.5</pose>
       <static>1</static>
       <link name='body'>
@@ -598,14 +596,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/elephant.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/bear_pink_hooked.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/elephant.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/bear_pink_hooked.dae</uri>
             </mesh>
           </geometry>
           <surface>
