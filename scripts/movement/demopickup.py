@@ -70,7 +70,7 @@ class demoPickUp(object):
         # Minimum distance in front of dumbbell and block
         self.__goal_dist_in_front__db = 0.23
 
-        self.__goal_dist_in_front_BEAR = 0.22
+        self.__goal_dist_in_front_BEAR = 0.215
         self.__prop = 0.15
 
         rospy.sleep(3)
@@ -115,7 +115,7 @@ class demoPickUp(object):
         the dumbbell """
 
         # Set arm and gripper joint goals and move them
-        arm_joint_goal = [0.0, 0.75, 0.05, -0.8]
+        arm_joint_goal = [0.0, 0.725, 0.045, -0.8]
         gripper_joint_goal = [0.015, 0.015]
         self.move_group_arm.go(arm_joint_goal, wait=True)
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
@@ -131,7 +131,7 @@ class demoPickUp(object):
             return 
 
         # Set arm and gripper joint goals and move them    
-        arm_joint_goal = [0.0, 0.05, -0.45, -0.1]
+        arm_joint_goal = [0.0, 0.05, -0.50, -0.15]
         gripper_joint_goal = [0.004, 0.004]
         self.move_group_arm.go(arm_joint_goal, wait=True)
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
