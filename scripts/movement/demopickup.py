@@ -167,7 +167,7 @@ class demoPickUp(object):
         if diff_dist == float("inf"):
             print("=====I can't see it! Turning turning=====")
             ang_v = 0.15
-            lin_v = 0.05
+            lin_v = 0.00
         
         # Stop if the robot is in front of the dumbbell/block
         elif diff_dist < self.__goal_dist_in_front__db:
@@ -248,7 +248,7 @@ class demoPickUp(object):
             ang_v, lin_v = self.set_vel(0, min_dist)
             self.pub_vel(ang_v, lin_v)
     
-    def move_to_dumbbell(self, color: str):
+    def move_to_object(self, color: str):
         """ Move to a dumbbell based on color """
 
         # Do nothing if there are no images
@@ -287,7 +287,7 @@ class demoPickUp(object):
             print(f"abs(err) / w : {abs(err) / w}")
 
             # If the color center is at the front
-            if abs(err) / w < 0.09:
+            if abs(err) / w < 0.05:
                 
                 min_dist = min(self.__scan_data[-10:] + self.__scan_data[:10])
 
@@ -336,12 +336,12 @@ class demoPickUp(object):
 
     
     def run(self):
-        r = rospy.Rate(10)
+        r = rospy.Rate(5)
 
         while not rospy.is_shutdown():
 
             if self.robot_status == MOVING_TO_BASKET:
-                self.move_to_dumbbell(color="bear_red")
+                self.move_to_object(color="bear_red")
 
             
             r.sleep()
