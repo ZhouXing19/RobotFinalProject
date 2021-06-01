@@ -4,10 +4,10 @@
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
 
-  <arg name="first_tb3_x_pos" default="7.0"/>
-  <arg name="first_tb3_y_pos" default="4.0"/>
+  <arg name="first_tb3_x_pos" default="-4.0"/>
+  <arg name="first_tb3_y_pos" default="6.5"/>
   <arg name="first_tb3_z_pos" default=" 0.0"/>
-  <arg name="first_tb3_yaw"   default=" 1.57"/>
+  <arg name="first_tb3_yaw"   default="3.14"/>
 
 
   <rosparam file="$(find turtlebot3_manipulation_gazebo)/config/gazebo_controller.yaml" command="load"/>
