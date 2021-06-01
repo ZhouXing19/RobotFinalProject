@@ -477,7 +477,7 @@
 
 
     <model name='brown_bear'>
-      <pose>7.5 7 0.0 1.5708 0 0.5</pose>
+      <pose>6.0 6.0 0.0 1.5708 0 0.5</pose>
       <static>1</static>
       <link name='body'>
         <inertial>
@@ -530,7 +530,7 @@
     </model>
 
     <model name='white_bear'>
-      <pose>8 7 0.0 1.5708 0 0.5</pose>
+      <pose>8.0 6.0 0.0 1.5708 0 0.5</pose>
       <static>1</static>
       <link name='body'>
         <inertial>
@@ -579,11 +579,11 @@
     </model>
 
     <model name='pink_bear'>
-      <pose>8.5 7 0.0 1.5708 0 0.5</pose>
-      <static>1</static>
+      <pose>7.0 6.0 0.0 1.5708 0 0.5</pose>
+      <static>0</static>
       <link name='body'>
         <inertial>
-          <mass>0.05</mass>
+          <mass>0.02</mass>
           <inertia>
             <ixx>0.000669353</ixx>
             <ixy>0</ixy>
