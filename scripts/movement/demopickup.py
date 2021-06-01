@@ -12,15 +12,35 @@ from nav_msgs.msg import Odometry
 
 import moveit_commander
 
+'''
+red bear: lower_red = np.array([0, 50, 150])
+upper_red = np.array([20, 255, 255])
+
+brown bear: lower_red = np.array([2, 219, 20])
+upper_red = np.array([22, 259, 120])
+
+while bear: lower_red = np.array([0, 0, 255])
+upper_red = np.array([150, 150, 255])
+'''
+
+
 # Define colors for the dumbbells and block number
-COLOR_BOUNDS = {'red': {'lb': np.array([0, 50, 0]),
-                            'ub': np.array([50, 255, 255])},
-                    'green': {'lb': np.array([50, 50, 0]),
-                            'ub': np.array([100, 255, 255])},
-                    'blue': {'lb': np.array([100, 50, 0]), 
-                            'ub': np.array([160, 255, 255])},
-                    'black': {'lb': np.array([0, 0, 0]), 
-                            'ub': np.array([180, 255, 50])}}
+COLOR_BOUNDS = {
+    'red': {'lb': np.array([0, 50, 0]),
+                'ub': np.array([50, 255, 255])},
+    'green': {'lb': np.array([50, 50, 0]),
+            'ub': np.array([100, 255, 255])},
+    'blue': {'lb': np.array([100, 50, 0]), 
+            'ub': np.array([160, 255, 255])},
+    'black': {'lb': np.array([0, 0, 0]), 
+            'ub': np.array([180, 255, 50])},
+    'bear_red': {'lb': np.array([0, 50, 150]),
+                'ub': np.array([20, 255, 255])},
+    'bear_brown': {'lb': np.array([2, 219, 20]),
+                'ub': np.array([22, 259, 120])},
+    'bear_white': {'lb': np.array([0, 0, 255]),
+                'ub': np.array([150, 150, 255])}
+}
 
 MOVING_TO_BASKET = "moving to basket"
 MOVED_TO_BASKET = "moved to basket"
