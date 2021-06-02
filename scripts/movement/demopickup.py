@@ -74,7 +74,7 @@ class demoPickUp(object):
         self.__goal_dist_in_front__db = 0.23
 
         self.__goal_dist_in_front_BEAR = 0.217
-        self.__prop = 0.15
+        self.__prop = 0.13
 
         rospy.sleep(3)
 
@@ -107,7 +107,13 @@ class demoPickUp(object):
         
         self.robot_status = init_state
 
+        self.curr_color = None
+
         # Now everything is initialized
+
+        self.bear_status = {"bear_red": 0,
+                "bear_white": 0,
+                "bear_brown": 0}
 
         print("initalized!!!13333")
         self.initialized = True
@@ -173,7 +179,7 @@ class demoPickUp(object):
         if diff_dist == float("inf"):
             print("=====I can't see it! Turning turning=====")
             ang_v = 0.50
-            lin_v = 0.00
+            lin_v = 0.10
         
         # Stop if the robot is in front of the dumbbell/block
         elif diff_dist < self.__goal_dist_in_front__db:
@@ -203,7 +209,7 @@ class demoPickUp(object):
         self.pub_vel(0.0, 0.0)
     
     def step_back(self):
-        self.pub_vel(0.0, -0.05)
+        self.pub_vel(0.0, -0.5)
         rospy.sleep(1)
 
 
@@ -268,7 +274,7 @@ class demoPickUp(object):
             print(f"abs(err) / w : {abs(err) / w}")
 
             # If the color center is at the front
-            if abs(err) / w < 0.05:
+            if abs(err) / w <= 0.052:
                 
                 min_dist = min(self.__scan_data[-10:] + self.__scan_data[:10])
 
@@ -317,6 +323,7 @@ class demoPickUp(object):
         print("==========lift_to_supporter===========")
         self.drop_bear()
         self.step_back()
+        self.bear_status[self.curr_color] = 1
         self.robot_status = next_status
 
 
@@ -327,14 +334,26 @@ class demoPickUp(object):
 
         while not rospy.is_shutdown():
 
+            if self.bear_status['bear_red'] == 0:
+                self.curr_color = 'bear_red'
+            elif self.bear_status['bear_white'] == 0:
+                self.curr_color = 'bear_white'
+            else:
+                self.curr_color = 'bear_brown'
+
+            print(f"**** current color: {self.curr_color} ****")
+
             if self.robot_status == MOVING_TO_BEAR:
-                self.move_to_object(color="bear_red", goal_dist=self.__goal_dist_in_front_BEAR, next_status=MOVED_TO_BEAR)
+                self.move_to_object(color=self.curr_color, goal_dist=self.__goal_dist_in_front_BEAR, next_status=MOVED_TO_BEAR)
             elif self.robot_status == MOVED_TO_BEAR:
                 self.lift_dumbbell(next_status=HOLDING_BEAR)
             elif self.robot_status == HOLDING_BEAR:
-                self.move_to_object(color="bear_red", goal_dist=0.35, next_status=REACHED_SUPPORTER_RED)
+                self.move_to_object(color=self.curr_color, goal_dist=0.4, next_status=REACHED_SUPPORTER_RED)
             elif self.robot_status == REACHED_SUPPORTER_RED:
                 self.lift_to_supporter()
+                self.initialize_move_group()
+                
+
 
                 
             r.sleep()
