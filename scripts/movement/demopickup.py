@@ -153,6 +153,16 @@ class demoPickUp(object):
         self.move_group_gripper.stop()
         rospy.sleep(2)
         self.robot_status = HOLDING_BEAR
+
+    def drop_bear(self):
+        arm_joint_goal = [0.0, 0.25, -0.15, 0.2]
+        gripper_joint_goal = [0.01, 0.01]
+        self.move_group_arm.go(arm_joint_goal, wait=True)
+        self.move_group_gripper.go(gripper_joint_goal, wait=True)
+        self.move_group_arm.stop()
+        self.move_group_gripper.stop()
+        rospy.sleep(2)
+        print("---- Released gripper and lowered arms ----")
         
     def set_vel(self, diff_ang=0.0, diff_dist=float('inf')):
         """ Set the velocities of the robot """
@@ -162,7 +172,7 @@ class demoPickUp(object):
         # Keep turning if the robot cannot see anything
         if diff_dist == float("inf"):
             print("=====I can't see it! Turning turning=====")
-            ang_v = 0.30
+            ang_v = 0.50
             lin_v = 0.00
         
         # Stop if the robot is in front of the dumbbell/block
@@ -303,8 +313,12 @@ class demoPickUp(object):
             ang_v, lin_v = self.set_vel()
             self.pub_vel(ang_v, lin_v)
     
-    def lift_to_supporter(self):
-        print("==========Not implemented yet===========")
+    def lift_to_supporter(self, next_status=MOVING_TO_BEAR):
+        print("==========lift_to_supporter===========")
+        self.drop_bear()
+        self.step_back()
+        self.robot_status = next_status
+
 
 
     
