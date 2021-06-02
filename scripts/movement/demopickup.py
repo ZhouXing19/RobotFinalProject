@@ -74,7 +74,7 @@ class demoPickUp(object):
         self.__goal_dist_in_front__db = 0.23
 
         self.__goal_dist_in_front_BEAR = 0.217
-        self.__prop = 0.13
+        self.__prop = 0.17
 
         rospy.sleep(3)
 
@@ -138,7 +138,7 @@ class demoPickUp(object):
         print("----lifting-----")
 
         # Set arm and gripper joint goals and move them    
-        arm_joint_goal = [0.0, 0.05, -0.50, -0.15]
+        arm_joint_goal = [0.0, 0.16, -0.500, -0.10]
         gripper_joint_goal = [0.004, 0.004]
         self.move_group_arm.go(arm_joint_goal, wait=True)
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
@@ -209,8 +209,8 @@ class demoPickUp(object):
         self.pub_vel(0.0, 0.0)
     
     def step_back(self):
-        self.pub_vel(0.0, -0.5)
-        rospy.sleep(1)
+        self.pub_vel(0.0, -0.25)
+        rospy.sleep(0.4)
 
 
 
@@ -348,7 +348,7 @@ class demoPickUp(object):
             elif self.robot_status == MOVED_TO_BEAR:
                 self.lift_dumbbell(next_status=HOLDING_BEAR)
             elif self.robot_status == HOLDING_BEAR:
-                self.move_to_object(color=self.curr_color, goal_dist=0.4, next_status=REACHED_SUPPORTER_RED)
+                self.move_to_object(color=self.curr_color, goal_dist=0.38, next_status=REACHED_SUPPORTER_RED)
             elif self.robot_status == REACHED_SUPPORTER_RED:
                 self.lift_to_supporter()
                 self.initialize_move_group()
