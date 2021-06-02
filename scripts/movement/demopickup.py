@@ -42,10 +42,10 @@ COLOR_BOUNDS = {
                 'ub': np.array([150, 150, 255])}
 }
 
-MOVING_TO_BASKET = "moving to basket"
-MOVED_TO_BASKET = "moved to basket"
-HOLDING_BASKET = "holding basket"
-PULLING_BACK = "pulling basket"
+MOVING_TO_BEAR = "moving to BEAR"
+MOVED_TO_BEAR = "moved to BEAR"
+HOLDING_BEAR = "holding BEAR"
+PULLING_BACK = "pulling BEAR"
 
 # Define robot statuses to keep track of its actions
 MEASURE_ANGLE = "measure_angle"
@@ -57,7 +57,7 @@ REACHED_BLOCK = "reached_block"
 
 class demoPickUp(object):
 
-    def __init__(self, init_state=MOVING_TO_BASKET):
+    def __init__(self, init_state=MOVING_TO_BEAR):
 
         self.initialized = False
         rospy.init_node('demo_pickup')
@@ -70,7 +70,7 @@ class demoPickUp(object):
         # Minimum distance in front of dumbbell and block
         self.__goal_dist_in_front__db = 0.23
 
-        self.__goal_dist_in_front_basket = 0.22
+        self.__goal_dist_in_front_BEAR = 0.22
         self.__prop = 0.15
 
         rospy.sleep(3)
@@ -102,7 +102,7 @@ class demoPickUp(object):
         if self.initialized == False:
             self.initialize_move_group()
         
-        self.robot_status = MOVING_TO_BASKET
+        self.robot_status = init_state
 
         # Now everything is initialized
 
@@ -115,7 +115,7 @@ class demoPickUp(object):
         the dumbbell """
 
         # Set arm and gripper joint goals and move them
-        arm_joint_goal = [0.0, 0.70, 0.25, -1.0]
+        arm_joint_goal = [0.0, 0.75, 0.05, -0.8]
         gripper_joint_goal = [0.015, 0.015]
         self.move_group_arm.go(arm_joint_goal, wait=True)
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
@@ -145,10 +145,10 @@ class demoPickUp(object):
         self.pub_vel(0, 0)
 
         # After the robot grapped the dumbbells, it's time to identify the blocks
-        self.robot_status = HOLDING_BASKET
+        self.robot_status = HOLDING_BEAR
 
 
-    def grab_basket(self):
+    def grab_bear(self):
         arm_joint_goal = [0.0, 0.05, -0.45, 0.4]
         gripper_joint_goal = [0.004, 0.004]
         self.move_group_arm.go(arm_joint_goal, wait=True)
@@ -156,7 +156,7 @@ class demoPickUp(object):
         self.move_group_arm.stop()
         self.move_group_gripper.stop()
         rospy.sleep(2)
-        self.robot_status = HOLDING_BASKET
+        self.robot_status = HOLDING_BEAR
         
     def set_vel(self, diff_ang=0.0, diff_dist=float('inf')):
         """ Set the velocities of the robot """
@@ -167,7 +167,7 @@ class demoPickUp(object):
         if diff_dist == float("inf"):
             print("=====I can't see it! Turning turning=====")
             ang_v = 0.15
-            lin_v = 0.0
+            lin_v = 0.00
         
         # Stop if the robot is in front of the dumbbell/block
         elif diff_dist < self.__goal_dist_in_front__db:
@@ -222,33 +222,8 @@ class demoPickUp(object):
         self.image = self.bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
 
     
-
     
-    def move_to_basket(self, color:str):
-        # Now we are sure that the basket is in front of the robot
-
-        if len(self.image) == 0:
-            print("-- Have not got the image --")
-            return
-
-        if len(self.__scan_data) == 0:
-            print(" ---- no scan yet ---- ")
-            return
-
-        min_dist = min(self.__scan_data[-10:] + self.__scan_data[:10])
-        print(f"---- min_dist ----: {min_dist}")
-        
-        if min_dist <= self.__goal_dist_in_front_basket:
-            self.pub_vel(0, 0)
-            rospy.sleep(1)
-
-            self.robot_status = MOVED_TO_BASKET
-        else:
-
-            ang_v, lin_v = self.set_vel(0, min_dist)
-            self.pub_vel(ang_v, lin_v)
-    
-    def move_to_dumbbell(self, color: str):
+    def move_to_object(self, color, goal_dist=0.20):
         """ Move to a dumbbell based on color """
 
         # Do nothing if there are no images
@@ -294,7 +269,7 @@ class demoPickUp(object):
                 print(f"min_dist: {min_dist}")
 
                 # If the robot is close to the dumbbell
-                if min_dist <= self.__goal_dist_in_front__db:
+                if min_dist <= goal_dist:
 
                     # Stop the robot
                     self.pub_vel(0,0)
@@ -319,7 +294,7 @@ class demoPickUp(object):
             else:
                 
                 # Define k_p for proportional control            
-                k_p = 1.0 / 1000.0
+                k_p = 1.0 / 2000.0
 
                 # Slowly turn the head, so that the color center 
                 #   would be at the center of the camera
@@ -340,8 +315,8 @@ class demoPickUp(object):
 
         while not rospy.is_shutdown():
 
-            if self.robot_status == MOVING_TO_BASKET:
-                self.move_to_dumbbell(color="red")
+            if self.robot_status == MOVING_TO_BEAR:
+                self.move_to_object(color="bear_red", goal_dist=self.__goal_dist_in_front_BEAR)
 
             
             r.sleep()
