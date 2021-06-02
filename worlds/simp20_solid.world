@@ -423,7 +423,7 @@
     </model>
 
     <model name='supporter'>
-      <pose>5 5.7 0 1.5 -0 0</pose>
+      <pose>7.0 3.5 0 1.57 -0 -1.733</pose>
       <static>0</static>
       <link name='body'>
         <inertial>
@@ -477,11 +477,11 @@
 
 
     <model name='brown_bear'>
-      <pose>6.0 6.0 0.0 1.5708 0 0.5</pose>
-      <static>1</static>
+      <pose>9.165 2.25 0.0 1.5708 0 0.5</pose>
+      <static>0</static>
       <link name='body'>
         <inertial>
-          <mass>0.005</mass>
+          <mass>0.08</mass>
           <inertia>
             <ixx>0.000669353</ixx>
             <ixy>0</ixy>
@@ -530,11 +530,11 @@
     </model>
 
     <model name='white_bear'>
-      <pose>8.0 6.0 0.0 1.5708 0 0.5</pose>
-      <static>1</static>
+      <pose>7.0 6.0 0.0 1.5708 0 0.5</pose>
+      <static>0</static>
       <link name='body'>
         <inertial>
-          <mass>0.05</mass>
+          <mass>0.08</mass>
           <inertia>
             <ixx>0.000669353</ixx>
             <ixy>0</ixy>
@@ -579,11 +579,11 @@
     </model>
 
     <model name='pink_bear'>
-      <pose>7.0 6.0 0.0 1.5708 0 0.5</pose>
+      <pose>4.835 2.25 0.0 1.5708 0 0.5</pose>
       <static>0</static>
       <link name='body'>
         <inertial>
-          <mass>0.02</mass>
+          <mass>0.08</mass>
           <inertia>
             <ixx>0.000669353</ixx>
             <ixy>0</ixy>
@@ -1652,7 +1652,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>7 4.5 5 0.0 1.57 0</pose>
+        <pose>7 3.5 3.5 0.0 1.57 0</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>

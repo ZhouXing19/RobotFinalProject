@@ -46,6 +46,9 @@ MOVING_TO_BEAR = "moving to BEAR"
 MOVED_TO_BEAR = "moved to BEAR"
 HOLDING_BEAR = "holding BEAR"
 PULLING_BACK = "pulling BEAR"
+REACHED_SUPPORTER_RED = "REACHED_SUPPORTER_RED"
+REACHED_SUPPORTER_BROWN = "REACHED_SUPPORTER_BROWN"
+REACHED_SUPPORTER_WHITE = "REACHED_SUPPORTER_WHITE"
 
 # Define robot statuses to keep track of its actions
 MEASURE_ANGLE = "measure_angle"
@@ -70,7 +73,7 @@ class demoPickUp(object):
         # Minimum distance in front of dumbbell and block
         self.__goal_dist_in_front__db = 0.23
 
-        self.__goal_dist_in_front_BEAR = 0.215
+        self.__goal_dist_in_front_BEAR = 0.217
         self.__prop = 0.15
 
         rospy.sleep(3)
@@ -123,12 +126,10 @@ class demoPickUp(object):
         self.move_group_gripper.stop()
         rospy.sleep(0.5)
     
-    def lift_dumbbell(self):
+    def lift_dumbbell(self, next_status):
         """ Lift the dumbbell when robot reached the dumbbells """
 
-        # Do nothing if the robot hasn't reached the dumbbells
-        if self.robot_status != REACHED_DB:
-            return 
+        print("----lifting-----")
 
         # Set arm and gripper joint goals and move them    
         arm_joint_goal = [0.0, 0.05, -0.50, -0.15]
@@ -138,14 +139,9 @@ class demoPickUp(object):
         self.move_group_arm.stop()
         self.move_group_gripper.stop()
 
-        # Step back so the robot won't hit the dumbbell while rotating
-        print("----- stepping back!----")
-        self.pub_vel(0, -0.5)
-        rospy.sleep(0.8)
-        self.pub_vel(0, 0)
 
         # After the robot grapped the dumbbells, it's time to identify the blocks
-        self.robot_status = HOLDING_BEAR
+        self.robot_status = next_status
 
 
     def grab_bear(self):
@@ -166,7 +162,7 @@ class demoPickUp(object):
         # Keep turning if the robot cannot see anything
         if diff_dist == float("inf"):
             print("=====I can't see it! Turning turning=====")
-            ang_v = 0.15
+            ang_v = 0.30
             lin_v = 0.00
         
         # Stop if the robot is in front of the dumbbell/block
@@ -223,7 +219,7 @@ class demoPickUp(object):
 
     
     
-    def move_to_object(self, color, goal_dist=0.20):
+    def move_to_object(self, color, goal_dist=0.20, next_status=MOVED_TO_BEAR):
         """ Move to a dumbbell based on color """
 
         # Do nothing if there are no images
@@ -277,12 +273,11 @@ class demoPickUp(object):
                     # Sleep 1s to make sure the robot has stopped
                     rospy.sleep(1)
 
-                    # Change status to reached dumbbell
-                    self.robot_status = REACHED_DB
                     print(f"---reached dumbbell of color {color}----")
-
-                    # Lift the dumbbell
-                    self.lift_dumbbell()
+                    
+                    # Change status to reached dumbbell
+                    self.robot_status = next_status
+                    
 
                 else:
 
@@ -307,6 +302,9 @@ class demoPickUp(object):
             # Simply turn the head clockwise, without any linear speed
             ang_v, lin_v = self.set_vel()
             self.pub_vel(ang_v, lin_v)
+    
+    def lift_to_supporter(self):
+        print("==========Not implemented yet===========")
 
 
     
@@ -316,9 +314,15 @@ class demoPickUp(object):
         while not rospy.is_shutdown():
 
             if self.robot_status == MOVING_TO_BEAR:
-                self.move_to_object(color="bear_red", goal_dist=self.__goal_dist_in_front_BEAR)
+                self.move_to_object(color="bear_red", goal_dist=self.__goal_dist_in_front_BEAR, next_status=MOVED_TO_BEAR)
+            elif self.robot_status == MOVED_TO_BEAR:
+                self.lift_dumbbell(next_status=HOLDING_BEAR)
+            elif self.robot_status == HOLDING_BEAR:
+                self.move_to_object(color="bear_red", goal_dist=0.35, next_status=REACHED_SUPPORTER_RED)
+            elif self.robot_status == REACHED_SUPPORTER_RED:
+                self.lift_to_supporter()
 
-            
+                
             r.sleep()
 
 
