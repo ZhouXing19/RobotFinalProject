@@ -278,7 +278,7 @@
       </link>
     </model>
 
-    <model name='robot_dumbbell_red'>
+    <model name='robot_dumbbell_pink'>
       <pose>-7 5.7 0.2 1.5 0 1.57</pose>
       <static>0</static>
       <link name='body'>
@@ -296,14 +296,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_red.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_pink.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_red.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_pink.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -326,7 +326,7 @@
       </link>
     </model>
 
-    <model name='robot_dumbbell_blue'>
+    <model name='robot_dumbbell_purple'>
       <pose>-7 6.7 0.2 1.5 0 1.57</pose>
       <static>0</static>
       <link name='body'>
@@ -344,14 +344,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_blue.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_purple.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_blue.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_purple.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -374,7 +374,7 @@
       </link>
     </model>
 
-    <model name='robot_dumbbell_green'>
+    <model name='robot_dumbbell_orange'>
       <pose>-7 7.7 0.2 1.5 0 1.57</pose>
       <static>0</static>
       <link name='body'>
@@ -392,14 +392,14 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_green.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_orange.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_green.dae</uri>
+              <uri>model://escapebots/gazebo_custom_meshes/robot_dumbbell_orange.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -423,8 +423,8 @@
     </model>
 
     <model name='supporter'>
-      <pose>5 5.7 0 1.5 -0 0</pose>
-      <static>0</static>
+      <pose>5.0 7.0 0 1.57 -0 -1.733</pose>
+      <static>1</static>
       <link name='body'>
         <inertial>
           <mass>0.04</mass>
@@ -477,11 +477,11 @@
 
 
     <model name='brown_bear'>
-      <pose>7.5 7 0.2 1.5708 0 0.5</pose>
-      <static>1</static>
+      <pose>7.165 5.85 0.0 1.5708 0 4.24</pose>
+      <static>0</static>
       <link name='body'>
         <inertial>
-          <mass>0.005</mass>
+          <mass>0.08</mass>
           <inertia>
             <ixx>0.000669353</ixx>
             <ixy>0</ixy>
@@ -530,11 +530,11 @@
     </model>
 
     <model name='white_bear'>
-      <pose>8 7 0.2 1.5708 0 0.5</pose>
-      <static>1</static>
+      <pose>5.0 9.5 0.0 1.5708 0 -0.5</pose>
+      <static>0</static>
       <link name='body'>
         <inertial>
-          <mass>0.05</mass>
+          <mass>0.08</mass>
           <inertia>
             <ixx>0.000669353</ixx>
             <ixy>0</ixy>
@@ -579,11 +579,11 @@
     </model>
 
     <model name='pink_bear'>
-      <pose>8.5 7 0.2 1.5708 0 0.5</pose>
-      <static>1</static>
+      <pose>2.835 5.85 0.0 1.5708 0 0.5</pose>
+      <static>0</static>
       <link name='body'>
         <inertial>
-          <mass>0.05</mass>
+          <mass>0.08</mass>
           <inertia>
             <ixx>0.000669353</ixx>
             <ixy>0</ixy>
@@ -604,6 +604,54 @@
           <geometry>
             <mesh>
               <uri>model://escapebots/gazebo_custom_meshes/bear_pink_hooked.dae</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <model name='blocker'>
+      <pose>5.168 1.706 0.0 1.57 -0 3.87</pose>
+      <static>1</static>
+      <link name='body'>
+        <inertial>
+          <mass>0.02</mass>
+          <inertia>
+            <ixx>0.000669353</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.000133871</iyy>
+            <iyz>0</iyz>
+            <izz>0.000669353</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/blocker.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>model://escapebots/gazebo_custom_meshes/blocker.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -1652,7 +1700,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>7 4.5 4 0.0 1.57 0</pose>
+        <pose>5.0 7.0 6 0.0 1.57 0</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
