@@ -627,7 +627,7 @@
     </model>
 
     <model name='blocker'>
-      <pose>3 2.5 0.0 0.0 -0 2</pose>
+      <pose>5.168 1.706 0.0 1.57 -0 3.87</pose>
       <static>1</static>
       <link name='body'>
         <inertial>
