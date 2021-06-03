@@ -6,6 +6,15 @@ import random
 from q_learning import QLearning
 from escapebots.msg import QLearningReward, QMatrix, QMatrixRow, RobotTasksDoors
 
+# References for Q-Learning algorithm and update functions
+'''
+    Nash Q-Learning Tutorial: https://towardsdatascience.com/multi-agent-rl-nash-equilibria-and-friend-or-foe-q-learning-4a0b9aae3a1e
+    Hu & Wellman: https://www.jmlr.org/papers/volume4/hu03a/hu03a.pdf
+    Hu & Wellman again: http://www.lirmm.fr/~jq/Cours/3cycle/module/HuWellman98icml.pdf
+    Littman: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.589.8571&rep=rep1&type=pdf
+    Kok & Vlassis: https://icml.cc/Conferences/2004/proceedings/papers/267.pdf
+'''
+
 class QLearningTraining(object):
     # Initialize publishers and subscribers
     def __init__(self):
@@ -25,8 +34,8 @@ class QLearningTraining(object):
         self.q_matrix_msg_b = QMatrix()
 
         # TODO: For ease of use in training, we'll store the Q-matrices in a numpy array
-        self.q_matrix_arr_a = np.zeros((64,9))
-        self.q_matrix_arr_b = np.zeros((64,9))
+        self.q_matrix_arr_a = np.zeros((128,7))
+        self.q_matrix_arr_b = np.zeros((128,7))
 
         # Keep track of the 5 most recently updated Q-values per Q-matrix
         self.q_history_a = []
@@ -45,6 +54,7 @@ class QLearningTraining(object):
         self.new_state = new_state
 
         # TODO: Move the robot according to the current action
+        self.complete_task_or_door(self.current_action)
         
 
     # Selects a random valid action from the current state
@@ -67,12 +77,29 @@ class QLearningTraining(object):
             s_a_from_origin = self.get_random_action(0)
             return s_a_from_origin
 
+    # Send a message to complete a task / close a door
+    def complete_task_or_door(self, action):
+        # Initialize the robot movement
+        self.movement = RobotTasksDoors()
+
+        # Find the current action
+        current_action = self.q_learning.actions[action]
+
+        # Set the message fields to the appropriate values
+        self.movement.task_or_door = current_action["task"]
+        self.movement.is_complete = current_action["complete"]
+
+        # Publish the movement
+        self.robot_action_pub.publish(self.movement)
+
+        return
+
     def update_q_matrix(self, data):
         # data.reward receives the reward
-        # TODO: same reward between both robots?
+        # Same reward function between both robots, b/c fully cooperative
 
         # Discount factor
-        gamma = 0.9
+        gamma = 0.8
 
         # Learning rate
         alpha = 1.0
@@ -111,7 +138,8 @@ class QLearningTraining(object):
             self.new_state = new_state
             self.current_action = action
 
-            # TODO: Perform the next action
+            # Perform the next action
+            self.complete_task_or_door(self.current_action)
             return
 
     # Determines when the Q-matrix has converged
@@ -135,9 +163,11 @@ class QLearningTraining(object):
         
         return False
     
-    def convert_send_qmatrix_msg(self): # Converts numpy array to QMatrix msg
+    # Converts numpy arrays to QMatrix msgs
+    def convert_send_qmatrix_msg(self):
         self.q_matrix_msg_a = QMatrix()
         self.q_matrix_msg_b = QMatrix()
+
         for i in range(len(self.q_matrix_arr_a)):
             row = QMatrixRow()
             row.q_matrix_row = self.q_matrix_arr_a[i].astype(int)

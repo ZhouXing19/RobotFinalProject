@@ -24,16 +24,13 @@ class QLearning(object):
         # e.g. self.action_matrix[0][12] = 5
         self.action_matrix = np.loadtxt(path_prefix + "action_matrix.txt")
 
-        # TODO: Fetch actions. These are the only 9 possible actions the system can take.
+        # TODO: Fetch actions. These are the only 7 possible actions the system can take.
         # self.actions is an array of dictionaries where the row index corresponds
         # to the action number, and the value has the following form:
         # { dumbbell: "red", block: 1}
-        colors = ["red", "green", "blue"]
         self.actions = np.loadtxt(path_prefix + "actions.txt")
-
-        # TODO: fix actions mapping (it may just be a list of ints)
         self.actions = list(map(
-            lambda x: {"dumbbell": colors[int(x[0])], "block": int(x[1])},
+            lambda x: {"task": int(x[0]), "complete": int(x[1])},
             self.actions
         ))
 
@@ -41,7 +38,10 @@ class QLearning(object):
         # Fetch states. There are 128 states. Each row index corresponds to the
         # state number, and the value is a list of 8 items indicating whether a task 
         # has been completed (0 or 1) and a door has been closed (also 0 or 1).
-        # Note: that not all states are possible to get to.
+        #
+        # The first three columns correspond to the task, and the next four columns each represent a door.
+        #
+        # This is a joint state space, i.e. each state encapsulates the location of both robots.
         self.states = np.loadtxt(path_prefix + "states.txt")
         self.states = list(map(lambda x: list(map(lambda y: int(y), x)), self.states))
 
@@ -65,9 +65,9 @@ class QLearning(object):
         # Read in the .txt file
         with open(os.path.dirname(__file__) + '/q_matrix_' + agent + '.txt','r') as f:
             for line in f.readlines():
-                # The line below is messy...but it converts all those string arrays in the .txt
-                # to float arrays
-                # (Yes, we could've just used JSON...we were devoted to .txt though)
+                # The code below is messy...
+                # ...but it converts all those string arrays in the .txt to float arrays
+                # (We could've just used JSON. We were devoted to .txt though)
                 q_matrix_arr.append([float(x) for x in line[0:-1].split(', ')])
 
         return q_matrix_arr
