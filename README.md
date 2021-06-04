@@ -47,11 +47,11 @@ The multi-agent Q-Learning proceeded much in the same way as the Q-Learning proj
 **Robot movement & kinematics**:
 The robot movement was largely divided into two sections: completing room tasks and closing room doors.
 
-Tasks: The 3 tasks that we established were hanging up bears, knocking dumbbells, and "dancing". **TODO: add more detail**
+Tasks: The 3 tasks that we established were hanging up bears, knocking dumbbells, and "dancing". 
 
-For knocking over dumbbells, a similar method to the q-learning project was used, with color detection and arm movement. The robot knocked over three dumbbells using it's arm. Hanging the bears was also a simnilar algorithm, except the drop off position for hanging the bears was also important, so that was an added additional step.
+For knocking over dumbbells, a similar method to the Q-Learning project was used, with color detection and arm movement. The robot knocked over three dumbbells using its arm. Hanging the bears was also a similar algorithm, except the drop off position for hanging the bears was also important, so that was an added additional step.
 
-Doors: There were a total of 4 doors that needed to be closed as a part of satisfying the escape room requirements. Each of the tasks occurs in a room, and for that room to be marked complete, its door must be shut. There are 3 doors that correspond to each task room, plus 1 exit door that must also close. In order to do this, we used both the LiDAR and color detection to make sure we were going through the correct arch way.
+Doors: There were a total of 4 doors that needed to be closed as a part of satisfying the escape room requirements. Each of the tasks occurs in a room, and for that room to be marked complete, its door must be shut. There are 3 doors that correspond to each task room, plus 1 exit door that must also close. In order to do this, we used both the LiDAR and color detection to make sure we were going through the correct archway.
 
 ## System Architecture
 
@@ -59,7 +59,7 @@ Doors: There were a total of 4 doors that needed to be closed as a part of satis
 We created 3 matrices, states, action-matrix and actions, all located in the action_states folder. The states matrix represents all 128 (2^7) states that our world can be in.  This was created by writing a function that computes all the possible permutations of a list, and then running it on each of the lists `[0,0,0,0,0,0,0], [1,0,0,0,0,0,0],… [1,1,1,1,1,1,1]`, to generate all possible combinations of the objects and their values. The actions matrix represents the 7 actions we are allowed to take; each of the 7 objects is allowed to be moved to its final position (represented by the value 1). This was manually written due to its simplicity. The action-matrix matrix represents each of the 128 possible states and the valid states that can be reached from that state. This was computed by first creating an empty 128x128 matrix. Then each state was compared to every other state, and if there was only one difference, and that difference represented one of the actions being completed, not undone, the location of this action was recorded. To further filter these possible actions, the action was checked against the state of the world to make sure that the action was valid at the time. For example, the yellow door could only be closed if the animals had already been moved. If these conditions weren’t true, the value was changed back to -1, if it was, this action was recorded as a valid action that could move state A to state B. This was coded through a series of loops and if/else statements and then output into the right format.
 
 
-### Algorithm
+### Q-Learning Algorithm
 The main robotics algorithm we were looking to implement is Nash Q-Learning, which is a kind of Multi-Agent Reinforcement Learning (MARL) algorithm. Nash Q-Learning works by establishing a Nash equilibrium strategy among all learning agents such that each agent's actions are the best response to any other agent's action. 
 
 We wanted to implement a fully cooperative version of Nash Q-Learning, where all robots intend to maximize the common reward. To do so, we used a common fully cooperative multi-agent Q-Learning implementation, wherein each robot maintains its own Q-function and Q-matrix. In the update for each robot's Q-function, it differs slightly from single-agent Q-Learning in that the robot accounts for the other robot's Q-values and Nash equilibrium strategy. The general equation is as follows:
@@ -72,12 +72,19 @@ We used a modified version of the Nash Q-value (Nash(s', a1, ..., aN)) since our
 
 Since we use a learning rate of 1, the algorithm distills down to a much simpler version that resembles single-agent Q-Learning. This should be the case, as the MARL we use should be somewhat similar to the single-agent learning given that our robots must be fully cooperative.
 
-### Code Location
+### Code Locations
+
+**Matrices**:
+The state and action matrices can all be found in the `action_states` folder. The converged Q-matrices, `q_matrix_a.txt` and `q_matrix_b.txt`, are found in the `scripts` folder.
+
+**Q-Learning**:
 Essentially all of the code for our MARL algorithm and functions can be found in the `q_learning_training.py`. The `update_q_matrix()` function is particularly important, as it is the epicenter of the algorithm's execution.
+
+**Movement & Kinematics**:
+`action.py` and `action_rb2.py` contain all of the movement code extracted from the files in the `movement` folder. We decided to consolidate the movement code into 2 files in order to integrate it with the Q-Learning component and translate the Q-matrix into an action sequence for the robots to execute.
 
 ## Challenges
 One of the main challenges with the Q-Learning component was the process of getting a handle on the general concepts of MARL, determining what algorithm we wanted to use, and then translating that algorithm from the research papers into our project. None of us had any experience with MARL beforehand, so it actually took a couple of days to research just to get a grip on the idea of collaborative Markov games. We then had to translate the high-level, often highly mathematical explanations into our own project, which is a much more basic implementation of MARL. The latter portion was certainly the most challenging, since we had to bridge that gap between the papers and our own work, requiring us to tweak the algorithms presented to work better for us..
-**TODO: Add kinematics challenges**
 
 Figuring out to move through the archway was very difficult. Checking if a color is NOT in an image turned out to be extremely challenging, as we were using that to check if we had passed through an archway. We had to keep checking the image, but checking the mask cv2 created did not work for some reason. This was a huge challenge because this prevented the robot from being able to move between rooms. 
 
@@ -88,4 +95,4 @@ We were happy with our project but there were definitely a lot of parts that did
 - Controlling multiple robots in the same world can be very challenging 
 - Integrating multiple kinematics files together requires extra launch-files, so it is good to plan ahead for how to combine all parts of the project
 - Using the robot gripper with objects that aren’t very simple shapes provides a lot of extra challenges
-- MARL is an incredibly large field of research, and there's a ton of different algorithsm suited to different multi-agent situations
+- MARL is a vast field of research, and there's a ton of different algorithsm suited to different multi-agent situations, which is good to keep in mind if optimization is important
