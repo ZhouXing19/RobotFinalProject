@@ -2,6 +2,7 @@
 
 import numpy as np
 import rospy, sys, os
+from q_learning import QLearning
 
 # Path of directory on where this file is located
 path_prefix = os.path.dirname(__file__) + "/action_states/"
@@ -14,29 +15,23 @@ class Actions(object):
         rospy.sleep(1)
 
         self.action_matrix = np.loadtxt(path_prefix + "action_matrix.txt")
+        self.q_learning = QLearning()
 
         # Import qmatrix, action matrix and actions
         # import qmatrix
         self.qmatrix = []
 
-        # create an empty action list
+        # create an empty action list of the optimal order of tasks
         self.action_list = []
 
+        # Split the ordering of tasks into robot A and robot B tasks,
+        # for the purposes of the demo
+        # (As is probably known by now, our demo isn't collaborative)
+        self.action_list_a = []
+        self.action_list_b = []
+
+
         self.run()
-    
-    def read_q_matrix(self, agent):
-        # Save the Q-matrix as a 2D float array
-        q_matrix_arr = []
-
-        # Read in the .txt file
-        with open(os.path.dirname(__file__) + '/q_matrix_' + agent + '.txt','r') as f:
-            for line in f.readlines():
-                # The code below is messy...
-                # ...but it converts all those string arrays in the .txt to float arrays
-                # (We could've just used JSON. We were devoted to .txt though)
-                q_matrix_arr.append([float(x) for x in line[0:-1].split(', ')])
-
-        self.qmatrix = q_matrix_arr
 
 
     def read_matrix(self):
@@ -64,12 +59,20 @@ class Actions(object):
         print("action list:")
         print(self.action_list)
 
+        for action in self.action_list:
+            if action >= 4:
+                self.action_list_a.append(action)
+            else:
+                self.action_list_b.append(action)
+        
+        return
+
     def run(self):
-        self.read_q_matrix('a')
+        self.q_learning.read_q_matrix('a')
         self.read_matrix()
         print("done")
             
-# run our node and keep rospy spinnning
+# run our node and keep rospy spinning
 if __name__ == "__main__":
     node = Actions()
     rospy.spin()
