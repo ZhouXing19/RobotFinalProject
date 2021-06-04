@@ -1,13 +1,5 @@
-
-"""Use LIDAR to detect distance through arch way.  +- 10 degrees to have a significantly long range. 
-
-Approach the color
-
-Try to calculate the length of the doorway and use trigonometry to figure out how far you are from the doorway
-
-"""
-
 #!/usr/bin/env python3
+
 import rospy, rospkg, cv2, cv_bridge
 import os
 import numpy as np
@@ -18,15 +10,17 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 
+import moveit_commander
+
 COLOR_BOUNDS = {
-    'red_arc': {'lb': np.array([100, 103, 235]),
-                'ub': np.array([160, 163, 255])},
-    'blue_arc': {'lb': np.array([191, 191, 255]),
-            'ub': np.array([144, 169, 250])},
-    'green_arc': {'lb': np.array([0, 160, 215]), 
-            'ub': np.array([36, 210, 255])},
+    'red_arc': {'lb': np.array([0, 220, 168]),
+                'ub': np.array([20, 255, 230])},
+    'blue_arc': {'lb': np.array([110, 235, 176]),
+                'ub': np.array([130, 255, 255])},
+    'green_arc': {'lb': np.array([50, 167, 176]), 
+                'ub': np.array([70, 255, 255])},
     'yellow_arc': {'lb': np.array([30, 164, 110]), 
-                    'ub': np.array([60, 255, 255])}
+                'ub': np.array([60, 255, 255])}
 }
 
 FIND_ARC = "find archway"
@@ -34,9 +28,9 @@ APPROACH_ARC = "approach the archway and move through it"
 
 class travel(object):
     
-    def __init__(self, init_state = FIND_ARC):
+    def __init__(self):
         self.initialized = False
-        rospy.init_node('find_arc')
+        rospy.init_node('travel')
 
 
         self.image_sub = rospy.Subscriber('camera/rgb/image_raw', Image, self.image_callback)
@@ -63,16 +57,36 @@ class travel(object):
         self.scan_max = None
 
 
-        if self.initialized == False:
-            self.find_arc()
         
         self.robot_status = FIND_ARC
         
+        self.curr_color = None
+        # if self.initialized == False:
+        #     self.find_arc(color)
 
         # Now everything is initialized
 
         print("initalized!!!13333")
         self.initialized = True
+    
+    def scan_callback(self, data):
+        if not self.initialized:
+            return
+        
+        self.__scan_data = data.ranges
+
+        if not self.scan_max:
+            self.scan_max = data.range_max
+
+    def image_callback(self, data):
+        """ Process the image from the robot's RGB camera """
+
+        # Do nothing if initialization is not done
+        if not self.initialized:
+            return
+
+        # Take the ROS message with the image and turn it into a format cv2 can use
+        self.image = self.bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
     
     def set_vel(self, diff_ang=0.0, diff_dist=float('inf')):
             """ Set the velocities of the robot """
@@ -114,36 +128,18 @@ class travel(object):
     #     self.pub_vel(0.0, -0.05)
     #     rospy.sleep(1)
             
-    def scan_callback(self, data):
-        if not self.initialized:
-            return
-        
-        self.__scan_data = data.ranges
-
-        if not self.scan_max:
-            self.scan_max = data.range_max
-
-    def image_callback(self, data):
-        """ Process the image from the robot's RGB camera """
-
-        # Do nothing if initialization is not done
-        if not self.initialized:
-            return
-
-        # Take the ROS message with the image and turn it into a format cv2 can use
-        self.image = self.bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
 
     def find_arc(self, color: str):
         """ Turn towards an arc based off color """
 
         # Do nothing if there are no images
         if len(self.image) == 0:
-            print("-- Have not got the image --")
+            print("-- Have not got the image -- 137")
             return
 
         # Do nothing if there are no scan data
         if len(self.__scan_data) == 0:
-            print("-- Have not got the scan --")
+            print("-- Have not got the scan -- 142")
             return
 
         # Turn image into HSV style
@@ -220,16 +216,16 @@ class travel(object):
             ang_v, lin_v = self.set_vel()
             self.pub_vel(ang_v, lin_v)
             
-    def approach_arc(self, data, color:str):
+    def approach_arc(self, color:str):
         
         # Do nothing if there are no images
         if len(self.image) == 0:
-            print("-- Have not got the image --")
+            print("-- Have not got the image -- line 223")
             return
 
         # Do nothing if there are no scan data
         if len(self.__scan_data) == 0:
-            print("-- Have not got the scan --")
+            print("-- Have not got the scan -- line 228")
             return
         
         # Turn image into HSV style
@@ -241,54 +237,71 @@ class travel(object):
         # Mask and get moment of the color of the dumbbell
         mask = cv2.inRange(hsv, lb, ub)
         M = cv2.moments(mask)
-
-        
-        left_good = True
-        right_good = True
         
         
-        for i in range(-10,0):
-            if self.__scan_data[i] != float("inf"):
-                left_good = False
+        while self.robot_status == APPROACH_ARC:
+            
+            mask = cv2.inRange(hsv, lb, ub)
+            M = cv2.moments(mask)
+            
+            left_good = True
+            right_good = True
+            
+            if 255 not in mask:
+                print("no more pixels")
+                self.pub_vel(0,0)
+                self.robot_status == FIND_ARC
                 break
-        
-        for i in range(0,11):
-            if self.__scan_data[i] != float("inf"):
-                right_good = False
-                break
             
-        if left_good and right_good:
-            while M['m00'] > 0:
-                self.pub_vel(0,2)
-            rospy.sleep(3)
-            self.pub_vel(0,0)
-            # self.robot_status = APPROACH_ARC
+            for i in range(-7,0):
+                if self.__scan_data[i] != float("inf"):
+                    left_good = False
+                    break
             
-        elif !left_good and right_good:
-            self.pub_vel(-0.5, 0.1,) 
-            rospy.sleep(1)
-            self.pub_vel(0,0)
-            
-        elif left_good and !right_good:
-            self.pub_vel(0.5, 0.1)
-            rospy.sleep(1)
-            self.pub_vel(0,0)
+            for i in range(0,7):
+                if self.__scan_data[i] != float("inf"):
+                    right_good = False
+                    break
+                
+            if left_good and right_good:
+                # while (M['m00'] > 0):
+                # self.pub_vel(0,0)
+                print("both good")
+                self.pub_vel(0,.4)
+                print("vel has been published")
+                # self.pub_vel(0,0)
+                
+            elif left_good == False and right_good:
+                print("left badd")
+                self.pub_vel(0,0)
+                self.pub_vel(0.1, 0.1,) 
+                # self.pub_vel(0,0)
+                
+            elif left_good and right_good == False:
+                print("right bad")
+                self.pub_vel(0,0)
+                self.pub_vel(-0.1, 0.1)
+                # self.pub_vel(0,0)
             
 
     def run(self, color:str):
-        if self.robot_status ==  FIND_ARC:Lmao 
-            find_arc(color)
-        elif self.robot_status == APPROACH_ARC:
-            approach_arc(color)
+        r = rospy.Rate(5)
 
-          
+        while not rospy.is_shutdown():
+            if self.robot_status ==  FIND_ARC:
+                self.find_arc(color)
+            elif self.robot_status == APPROACH_ARC:
+                self.approach_arc(color)
+            
+            r.sleep()
+            
 
 
 
 if __name__ == '__main__':
     try:
-        node = travel("yellow_arc")
-        node.run()
+        node = travel()
+        node.run("red_arc")
     except rospy.ROSInterruptException:
         pass
             
