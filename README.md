@@ -8,7 +8,7 @@
 
 ## Motivation
 
-We will explore the collaboration/competition of two robots to finish tasks in a room in a specific order as fast as possible, so that they will be let out of the room. Each task can only be finished by one robot. This will involve some fun designs of the room, different customized tasks, and also the interaction of robots.
+We will explore the collaboration of two robots to finish tasks in a room in a specific order so that they will be able to escape the room. Each task can only be finished by one robot, and some can only be executed by one robot or the other. This will involve some fun designs of the room, different customized tasks, and also the interaction of robots in a multi-agent reinforcement learning setting.
 
 ## Instruction (demo)
 
