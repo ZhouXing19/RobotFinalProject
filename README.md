@@ -12,6 +12,8 @@ We will explore the collaboration of two robots to finish tasks in a room in a s
 
 ## Instruction (demo)
 
+0.0 After clone this repo, please rename it from "RobotFinalProj" to "**escapebots**"
+
 0. `git clone` or `git pull`, then `cd ~/catkin_ws && catkin_make` 
    
 1. In terminal: **(Don't forget to `cd ~/catkin_ws && catkin_make` for each new terminal window)**
@@ -19,9 +21,6 @@ We will explore the collaboration of two robots to finish tasks in a room in a s
 ```
 (1st window) $ roscore
 (2st window) $ roslaunch escapebots sing_demo.launch
-(3nd window) $ roslaunch turtlebot3_manipulation_moveit_config move_group.launch
-(Wait until you see "You can start planning now!!")
-(4th window) $ rosrun escapebots demopickup.py
 ```
 
 ## Project Description
@@ -32,6 +31,15 @@ Our overarching goal was to explore Multi-Agent Reinforcement Learning (MARL) an
 In the end, we were able to program our robots to follow a pseudo-MARL policy, where they both followed a joint state / action space but weren't ultimately able to collaborate in real-time in the same world. This was due to the limitations of Gazebo; it proved to be incredibly difficult and taxing to try and recode the Gazebo worlds and related files such that two robots could operate in the world at one time. Instead, we were able to code our robots to complete their respective tasks individually in order to "escape" the room, and the tasks were determined by the MARL algorithm.
 
 One of the interesting aspects of tackling this project is the extent to which collaboration between the robots was feasible. As mentioned previously, the limitations of Gazebo largely held us back from implementing a true, full-fledged MARL algorithm with real-time collaboration. We had to settle for a pseudo-collaborative demo, but it makes us wonder what a full collaborative implementation would look like. Exploring the kinematics of the robots and the degree to which they could pick up objects and manipulate them with the arm was also an interesting aspect of our project. We pushed the limits of the robots and had them pick up some less conventional objects, particularly with the task involving the bears. Before that, though, there was a lot of extensive trial-and-error to test exactly what the robot could and could not handle, including objects like ducks, baskets, etc. It was neat to use robot movement and kinematics with entertaining objects and tasks.
+
+
+### Demo GIF (10x speed up)
+
+#### A robot that is assigned to close all doors
+<img src="./gif/closing_doors.gif" width = 1000>
+
+#### A robot that is assigned to finish a "Hang Bears" task within one room
+<img src="./gif/grab_bear.gif" width = 1000>
 
 
 ### Main Components
