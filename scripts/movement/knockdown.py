@@ -32,9 +32,9 @@ COLOR_BOUNDS = {
     'pink_db': {'lb': np.array([100, 103, 235]),
                 'ub': np.array([160, 163, 255])},
     'purple_db': {'lb': np.array([124, 149, 170]),
-            'ub': np.array([144, 169, 250])},
+                  'ub': np.array([144, 169, 250])},
     'orange_db': {'lb': np.array([0, 160, 215]), 
-            'ub': np.array([36, 210, 255])},
+                  'ub': np.array([36, 210, 255])},
 }
 
 APPROACH_DUMBBELL = "approach dumbbell"
@@ -57,7 +57,7 @@ class knockover(object):
         # Minimum distance in front of dumbbell
         self.goal_dist_in_front_db = 0.23
 
-        self.prop = 0.15
+        self.__prop = 0.15
 
         rospy.sleep(3)
 
@@ -90,10 +90,29 @@ class knockover(object):
         
         self.robot_status = APPROACH_DUMBBELL
 
+        self.db_status = {"pink_db": 0,
+                            "purple_db": 0,
+                            "orange_db": 0}
+
+
         # Now everything is initialized
 
         print("initalized!!!13333")
         self.initialized = True
+
+    def initialize_move_group(self):
+        """ Initialize the robot arm & gripper position so it can grab onto
+        the dumbbell """
+
+        # Set arm and gripper joint goals and move them
+        arm_joint_goal = [0.0, -1.001, 0.3, .7]
+        gripper_joint_goal = [0.015, 0.015]
+        self.move_group_arm.go(arm_joint_goal, wait=True)
+        self.move_group_gripper.go(gripper_joint_goal, wait=True)
+        self.move_group_arm.stop()
+        self.move_group_gripper.stop()
+        rospy.sleep(0.5)
+
 
     def push_dumbbell(self):
             """ Push over the dumbbell"""
@@ -110,13 +129,13 @@ class knockover(object):
             self.move_group_arm.stop()
             self.move_group_gripper.stop()
 
-            # Step back so the robot won't hit the dumbbell while rotating
+            # Step back to look for the next object
             print("----- stepping back!----")
             self.pub_vel(0, -0.5)
             rospy.sleep(0.8)
             self.pub_vel(0, 0)
 
-            # After the robot grapped the dumbbells, it's time to find another dumbbell
+            # After the robot pushes over the dumbbell, find the next dumbbell
             self.robot_status = APPROACH_DUMBBELL
 
     def set_vel(self, diff_ang=0.0, diff_dist=float('inf')):
@@ -224,7 +243,7 @@ class knockover(object):
                 print(f"min_dist: {min_dist}")
 
                 # If the robot is close to the dumbbell
-                if min_dist <= self.__goal_dist_in_front__db:
+                if min_dist <= self.goal_dist_in_front_db:
 
                     # Stop the robot
                     self.pub_vel(0,0)
@@ -237,7 +256,7 @@ class knockover(object):
                     print(f"---reached dumbbell of color {color}----")
 
                     # Lift the dumbbell
-                    self.lift_dumbbell()
+                    self.push_dumbbell()
 
                 else:
 
@@ -268,9 +287,21 @@ class knockover(object):
         r = rospy.Rate(5)
 
         while not rospy.is_shutdown():
+            if self.db_status['pink_db'] == 0:
+                self.curr_color = 'pink_db'
+            elif self.db_status['purple_db'] == 0:
+                self.curr_color = 'purple_db'
+            elif self.db_status['orange_db'] == 0:
+                self.curr_color = 'orange_db'
+            else:
+                break
+            
 
             if self.robot_status == APPROACH_DUMBBELL:
-                self.move_to_dumbbell(color="purple_db")
+                self.move_to_dumbbell(color = self.curr_color)
+            elif self.robot_status == REACHED_DUMBBELL:
+                self.push_dumbbell()
+            
 
             
             r.sleep()
