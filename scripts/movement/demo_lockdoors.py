@@ -146,7 +146,7 @@ class demoLockDoors(object):
 
     def first_rush(self, next_status=FINISHED_FIRST_RUSHING):
         self.pub_vel(0.0, 0.1)
-        rospy.sleep(10)
+        rospy.sleep(12)
         self.stop_robot(3)
         self.pub_vel(0.0, 0.1)
         rospy.sleep(13)
@@ -161,8 +161,8 @@ class demoLockDoors(object):
         print("end of second_rush")
         self.robot_status = next_status
     
-    def turn_a_pi(self, next_status=TURNED_A_PI):
-        self.pub_vel(0.157, 0.03)
+    def turn_a_pi(self, next_status=TURNED_A_PI, lin_speed=0.03):
+        self.pub_vel(0.157, lin_speed)
         rospy.sleep(20)
         self.stop_robot()
         print("end of turn a pi")
@@ -372,7 +372,7 @@ class demoLockDoors(object):
                 print("finished second rush")
             elif self.robot_status == FINISHED_SECOND_RUSHING:
                 print("==== hi ======")
-                self.turn_a_pi(next_status=FINISHED_SECOND_RUSHING)
+                self.turn_a_pi(next_status=FINISHED_SECOND_RUSHING, lin_speed=0.0)
                 self.drop_blocker(next_status=DROPPED_BLOCKER)
             elif self.robot_status == DROPPED_BLOCKER:
                 print("====drop===")
