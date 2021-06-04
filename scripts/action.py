@@ -2,24 +2,38 @@
 
 import numpy as np
 import rospy, sys, os
-from q_learning import QLearning
 
 # Path of directory on where this file is located
 path_prefix = os.path.dirname(__file__) + "/action_states/"
+print(f"path_prefix:{path_prefix}")
+
+print("running action.py")
+
+action_dict = {0: "close red door",
+1: "close yellow door",
+2: "close blue door",
+3: "close green door",
+4: "hang bears",
+5: "dumbbells",
+6: "dancing"}
 
 class Actions(object):
 
     def __init__(self):
 
+        
+        self.initialized = False
         rospy.init_node("Actions")
-        rospy.sleep(1)
+        
+        print("hello from init1") # unprinted
+        
 
         self.action_matrix = np.loadtxt(path_prefix + "action_matrix.txt")
-        self.q_learning = QLearning()
 
         # Import qmatrix, action matrix and actions
         # import qmatrix
         self.qmatrix = []
+        self.qmatrix = self.read_q_matrix('a')
 
         # create an empty action list of the optimal order of tasks
         self.action_list = []
@@ -30,8 +44,8 @@ class Actions(object):
         self.action_list_a = []
         self.action_list_b = []
 
-
-        self.run()
+        self.initialized = True
+        
 
 
     def read_matrix(self):
@@ -65,14 +79,52 @@ class Actions(object):
             else:
                 self.action_list_b.append(action)
         
+        print("a list:")
+        for i in self.action_list_a:
+            print(f"{action_dict[i]}", end=', ')
+
+        print()
+        
+        print("b list:")
+        for i in self.action_list_b:
+            print(f"{action_dict[i]}", end=', ')
+        
+
         return
 
+
+    def read_q_matrix(self, agent):
+        # Save the Q-matrix as a 2D float array
+        q_matrix_arr = []
+
+        # Read in the .txt file
+        with open(os.path.dirname(__file__) + '/q_matrix_' + agent + '.txt','r') as f:
+            for line in f.readlines():
+                # The code below is messy...
+                # ...but it converts all those string arrays in the .txt to float arrays
+                # (We could've just used JSON. We were devoted to .txt though)
+                q_matrix_arr.append([float(x) for x in line[0:-1].split(', ')])
+
+        return q_matrix_arr
+
     def run(self):
-        self.q_learning.read_q_matrix('a')
-        self.read_matrix()
-        print("done")
-            
+        if not self.initialized:
+            return
+        r = rospy.Rate(10)
+        while not rospy.is_shutdown():
+            self.read_matrix()
+            print("done")
+            r.sleep()
+        
+                
 # run our node and keep rospy spinning
-if __name__ == "__main__":
-    node = Actions()
-    rospy.spin()
+if __name__ == '__main__':
+    try:
+        print("hello") # printed
+        node = Actions()
+        node.run()
+        print("hello2") # unprinted
+        
+    except rospy.ROSInterruptException:
+        print("errr")
+        pass

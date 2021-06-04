@@ -141,8 +141,10 @@ class demoLockDoors(object):
     
     
     def step_back(self):
-        self.pub_vel(0.0, -0.10)
-        rospy.sleep(1)
+        self.pub_vel(0.0, -0.50)
+        rospy.sleep(6)
+        self.stop_robot()
+        print("=====stepped_back=====")
 
     def first_rush(self, next_status=FINISHED_FIRST_RUSHING):
         self.pub_vel(0.0, 0.1)
@@ -339,44 +341,49 @@ class demoLockDoors(object):
             ang_v, lin_v = self.set_vel()
             self.pub_vel(ang_v, lin_v)
     
+    def lock_one_door(self):
+        if not self.initialized:
+            return
+        if self.robot_status == NOT_TURNED:
+            self.pub_vel(ang_v = 0.0, lin_v = 0.5)
+            rospy.sleep(2.5)
+            self.stop_robot()
+            self.pub_vel(ang_v = -0.314, lin_v = 0.0)
+            rospy.sleep(5)
+            self.stop_robot()
+            self.robot_status = MOVING_TO_BLOCKER
+        elif self.robot_status == MOVING_TO_BLOCKER:
+
+            self.move_to_object("blocker_blue", 
+                                goal_dist=self.__goal_dist_in_front__blocker, 
+                                next_status=REACHED_BLOCKER)
+        elif self.robot_status == REACHED_BLOCKER:
+            self.lift_blocker(next_status=HOLDING_BLOCKER)
+            print("holding now")
+        elif self.robot_status == HOLDING_BLOCKER:
+            self.turn_a_pi(next_status=TURNED_A_PI)
+        elif self.robot_status == TURNED_A_PI:
+            self.first_rush(next_status=FINISHED_FIRST_RUSHING)
+            print("finished first rush")
+        elif self.robot_status == FINISHED_FIRST_RUSHING:
+            self.turn_a_90(next_status=TURNED_A_90)
+            print("turned a 90")
+        elif self.robot_status == TURNED_A_90:
+            self.second_rush(next_status=FINISHED_SECOND_RUSHING)
+            print("finished second rush")
+        elif self.robot_status == FINISHED_SECOND_RUSHING:
+            print("==== hi ======")
+            self.turn_a_pi(next_status=FINISHED_SECOND_RUSHING, lin_speed=0.0)
+            self.drop_blocker(next_status=DROPPED_BLOCKER)
+        elif self.robot_status == DROPPED_BLOCKER:
+            print("====drop===")
+            self.step_back()
+    
     def run(self):
         r = rospy.Rate(10)
 
         while not rospy.is_shutdown():
-            if self.robot_status == NOT_TURNED:
-                self.pub_vel(ang_v = 0.0, lin_v = 0.5)
-                rospy.sleep(2.5)
-                self.stop_robot()
-                self.pub_vel(ang_v = -0.314, lin_v = 0.0)
-                rospy.sleep(5)
-                self.stop_robot()
-                self.robot_status = MOVING_TO_BLOCKER
-            elif self.robot_status == MOVING_TO_BLOCKER:
 
-                self.move_to_object("blocker_blue", 
-                                    goal_dist=self.__goal_dist_in_front__blocker, 
-                                    next_status=REACHED_BLOCKER)
-            elif self.robot_status == REACHED_BLOCKER:
-                self.lift_blocker(next_status=HOLDING_BLOCKER)
-                print("holding now")
-            elif self.robot_status == HOLDING_BLOCKER:
-                self.turn_a_pi(next_status=TURNED_A_PI)
-            elif self.robot_status == TURNED_A_PI:
-                self.first_rush(next_status=FINISHED_FIRST_RUSHING)
-                print("finished first rush")
-            elif self.robot_status == FINISHED_FIRST_RUSHING:
-                self.turn_a_90(next_status=TURNED_A_90)
-                print("turned a 90")
-            elif self.robot_status == TURNED_A_90:
-                self.second_rush(next_status=FINISHED_SECOND_RUSHING)
-                print("finished second rush")
-            elif self.robot_status == FINISHED_SECOND_RUSHING:
-                print("==== hi ======")
-                self.turn_a_pi(next_status=FINISHED_SECOND_RUSHING, lin_speed=0.0)
-                self.drop_blocker(next_status=DROPPED_BLOCKER)
-            elif self.robot_status == DROPPED_BLOCKER:
-                print("====drop===")
-                self.step_back()
             r.sleep()
 
 if __name__ == '__main__':
