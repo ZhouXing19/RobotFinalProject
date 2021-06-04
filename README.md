@@ -47,9 +47,11 @@ The multi-agent Q-Learning proceeded much in the same way as the Q-Learning proj
 **Robot movement & kinematics**:
 The robot movement was largely divided into two sections: completing room tasks and closing room doors.
 
-Tasks: The 3 tasks that we established were hanging up bears, moving dumbbells, and "dancing". **TODO: add more detail**
+Tasks: The 3 tasks that we established were hanging up bears, knocking dumbbells, and "dancing". **TODO: add more detail**
 
-Doors: There were a total of 4 doors that needed to be closed as a part of satisfying the escape room requirements. Each of the tasks occurs in a room, and for that room to be marked complete, its door must be shut. There are 3 doors that correspond to each task room, plus 1 exit door that must also close.
+For knocking over dumbbells, a similar method to the q-learning project was used, with color detection and arm movement. The robot knocked over three dumbbells using it's arm. Hanging the bears was also a simnilar algorithm, except the drop off position for hanging the bears was also important, so that was an added additional step.
+
+Doors: There were a total of 4 doors that needed to be closed as a part of satisfying the escape room requirements. Each of the tasks occurs in a room, and for that room to be marked complete, its door must be shut. There are 3 doors that correspond to each task room, plus 1 exit door that must also close. In order to do this, we used both the LiDAR and color detection to make sure we were going through the correct arch way.
 
 ## System Architecture
 
@@ -74,9 +76,10 @@ Since we use a learning rate of 1, the algorithm distills down to a much simpler
 Essentially all of the code for our MARL algorithm and functions can be found in the `q_learning_training.py`. The `update_q_matrix()` function is particularly important, as it is the epicenter of the algorithm's execution.
 
 ## Challenges
-One of the main challenges with the Q-Learning component was the process of getting a handle on the general concepts of MARL, determining what algorithm we wanted to use, and then translating that algorithm from the research papers into our project. None of us had any experience with MARL beforehand, so it actually took a couple of days to research just to get a grip on the idea of collaborative Markov games. We then had to translate the high-level, often highly mathematical explanations into our own project, which is a much more basic implementation of MARL. The latter portion was certainly the most challenging, since we had to bridge that gap between the papers and our own work, requiring us to tweak the algorithms presented to work better for us.
-
+One of the main challenges with the Q-Learning component was the process of getting a handle on the general concepts of MARL, determining what algorithm we wanted to use, and then translating that algorithm from the research papers into our project. None of us had any experience with MARL beforehand, so it actually took a couple of days to research just to get a grip on the idea of collaborative Markov games. We then had to translate the high-level, often highly mathematical explanations into our own project, which is a much more basic implementation of MARL. The latter portion was certainly the most challenging, since we had to bridge that gap between the papers and our own work, requiring us to tweak the algorithms presented to work better for us..
 **TODO: Add kinematics challenges**
+
+Figuring out to move through the archway was very difficult. Checking if a color is NOT in an image turned out to be extremely challenging, as we were using that to check if we had passed through an archway. We had to keep checking the image, but checking the mask cv2 created did not work for some reason. This was a huge challenge because this prevented the robot from being able to move between rooms. 
 
 ## Future Work
 We were happy with our project but there were definitely a lot of parts that didn’t go according to plan. A lot of our future work would be focused on fixing these issues by looking into alternate approaches and designs that might allow us to fully implement our original idea. For example, we would really like to have our robots simultaneously completing tasks in the same room. The MARL fell apart a little bit once we discovered that the robots wouldn't be able to work simultaneously in Gazebo. Our algorithm ended up exhibiting more of the single-agent Q-Learning functionality with a slight multi-agent twist, namely the joint state and action space. Additionally, future work could include making our world and objectives more complex, which would then affect the Q-Learning portion. By adding more sets of rules and additional challenges to the game, we could look into other Q-Learning algorithms that might fit this model more. There is a lot of space for us to expand on our current idea, and both fixing our issues with simultaneous robot movement and adding more components to our world would be a great place to start.
