@@ -25,14 +25,11 @@ class Actions(object):
         self.initialized = False
         rospy.init_node("Actions")
         
-        print("hello from init1") # unprinted
-        
 
         self.action_matrix = np.loadtxt(path_prefix + "action_matrix.txt")
 
         # Import qmatrix, action matrix and actions
         # import qmatrix
-        self.qmatrix = []
         self.qmatrix = self.read_q_matrix('a')
 
         # create an empty action list of the optimal order of tasks
@@ -46,8 +43,6 @@ class Actions(object):
 
         self.initialized = True
         
-
-
     def read_matrix(self):
         # initialize state to 0
         final_state = False
@@ -89,7 +84,6 @@ class Actions(object):
         for i in self.action_list_b:
             print(f"{action_dict[i]}", end=', ')
         
-
         return
 
 
@@ -120,11 +114,9 @@ class Actions(object):
 # run our node and keep rospy spinning
 if __name__ == '__main__':
     try:
-        print("hello") # printed
         node = Actions()
         node.run()
-        print("hello2") # unprinted
         
     except rospy.ROSInterruptException:
-        print("errr")
+
         pass
