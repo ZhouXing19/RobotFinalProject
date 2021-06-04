@@ -4,10 +4,10 @@
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
 
-  <arg name="first_tb3_x_pos" default="0"/>
-  <arg name="first_tb3_y_pos" default="0"/>
+  <arg name="first_tb3_x_pos" default="-2.4"/>
+  <arg name="first_tb3_y_pos" default="2.4"/>
   <arg name="first_tb3_z_pos" default=" 0.0"/>
-  <arg name="first_tb3_yaw"   default=" 1.0"/>
+  <arg name="first_tb3_yaw"   default=" 2.355"/>
 
 
   <rosparam file="$(find turtlebot3_manipulation_gazebo)/config/gazebo_controller.yaml" command="load"/>
@@ -47,6 +47,6 @@
   <include file="$(find turtlebot3_manipulation_moveit_config)/launch/move_group.launch" />
 
   <!-- run robot action node -->
-  <node name="robot_action" pkg="escapebots" type="demopickup.py" respawn="false" output='screen'/>
+  <node name="robot_action" pkg="escapebots" type="robot2_action.py" respawn="false" output='screen'/>
 
 </launch>

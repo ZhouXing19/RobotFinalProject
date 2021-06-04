@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
-  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2021-02-03T14:45:06Z</created><keywords></keywords><modified>2021-02-03T14:45:06Z</modified><revision></revision><subject></subject><title></title><unit meter="0.023400" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
+  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2021-02-03T14:45:06Z</created><keywords></keywords><modified>2021-02-03T14:45:06Z</modified><revision></revision><subject></subject><title></title><unit meter="0.025400" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_materials>
     <material id="lambert1" name="lambert1">
       <instance_effect url="#lambert1-fx"/>
@@ -11,14 +11,14 @@
       <profile_COMMON>
         <technique sid="standard">
           <lambert>
-          <emission>
-              <color sid="emission">0.331452  0.883871 0.743992 1.000000</color>
+            <emission>
+              <color sid="emission">0.000000  0.000000 0.500000 1.000000</color>
             </emission>
             <ambient>
-              <color sid="ambient">0.227419  0.606452 0.510476 1.000000</color>
+              <color sid="ambient">0.000000  0.000000 0.500000 1.000000</color>
             </ambient>
             <diffuse>
-              <color sid="diffuse">0.145599  0.388263 0.326818 1.000000</color>
+              <color sid="diffuse">0.400000  0.400000 0.750000 1.000000</color>
             </diffuse>
             <transparent opaque="RGB_ZERO">
               <color sid="transparent">0.000000  0.000000 0.000000 1.000000</color>
