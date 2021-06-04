@@ -53,9 +53,9 @@ Since we use a learning rate of 1, the algorithm distills down to a much simpler
 Essentially all of the code for our MARL algorithm and functions can be found in the `q_learning_training.py`. The `update_q_matrix()` function is particularly important, as it is the epicenter of the algorithm's execution.
 
 ## Challenges
-We were happy with our project but there were definitely a lot of parts that didn’t go according to plan. A lot of our future work would be focused on fixing these issues by looking into alternate approaches and designs that might allow us to fully implement our original idea. For example, we would really like to have our robots simultaneously completing tasks in the same room. Additionally, future work could include making our world and objectives more complex, which would then affect the Q-Learning portion. By adding more sets of rules and additional challenges to the game, we could look into other Q-Learning algorithms that might fit this model more. There is a lot of space for us to expand on our current idea, and both fixing our issues with simultaneous robot movement and adding more components to our world would be a great place to start.
-## Future Work
 
+## Future Work
+We were happy with our project but there were definitely a lot of parts that didn’t go according to plan. A lot of our future work would be focused on fixing these issues by looking into alternate approaches and designs that might allow us to fully implement our original idea. For example, we would really like to have our robots simultaneously completing tasks in the same room. Additionally, future work could include making our world and objectives more complex, which would then affect the Q-Learning portion. By adding more sets of rules and additional challenges to the game, we could look into other Q-Learning algorithms that might fit this model more. There is a lot of space for us to expand on our current idea, and both fixing our issues with simultaneous robot movement and adding more components to our world would be a great place to start.
 ## Takeaways
 - Controlling multiple robots in the same world can be very challenging 
 - Integrating multiple kinematics files together requires extra launch-files, so it is good to plan ahead for how to combine all parts of the project
