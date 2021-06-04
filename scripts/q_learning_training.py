@@ -96,7 +96,8 @@ class QLearningTraining(object):
 
     def update_q_matrix(self, data):
         # data.reward receives the reward
-        # Same reward function between both robots, b/c fully cooperative
+        # TODO: Same reward function between both robots, b/c fully cooperative?
+        # Or use different rewards to validate need for 2 Q-matrices?
 
         # Discount factor
         gamma = 0.8
@@ -109,7 +110,7 @@ class QLearningTraining(object):
         # Full equation: Q_x = (1 - alpha) * Q_x + alpha * (reward + gamma * Nash(s, a, b))
         # 1 - alpha * Q_x = 0 when alpha = 1, so that is taken out below
         Q_a = alpha * (data.reward + gamma * max(self.q_matrix_arr_a[self.new_state])) # * max(self.q_matrix_arr_b[self.new_state])
-        Q_b = alpha * (data.reward + gamma * max(self.q_matrix_arr_b[self.new_state]) * max(self.q_matrix_arr_a[self.new_state]))
+        Q_b = alpha * (data.reward + gamma * max(self.q_matrix_arr_b[self.new_state]) + max(self.q_matrix_arr_a[self.new_state]))
 
 
         old_q_a = self.q_matrix_arr_a[self.current_state, self.current_action]
@@ -167,6 +168,8 @@ class QLearningTraining(object):
         self.q_matrix_msg_a = QMatrix()
         self.q_matrix_msg_b = QMatrix()
 
+
+        # Convert both Q-matrices into a message format before publishing
         for i in range(len(self.q_matrix_arr_a)):
             row = QMatrixRow()
             row.q_matrix_row = self.q_matrix_arr_a[i].astype(int)
