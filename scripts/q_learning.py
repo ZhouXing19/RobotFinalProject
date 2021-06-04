@@ -3,7 +3,6 @@
 import rospy
 import numpy as np
 import os
-# TODO: escapebots.msg cannot be imported...still figuring this out
 from escapebots.msg import QMatrix, QMatrixRow
 
 # Path of directory on where this file is located
@@ -24,7 +23,7 @@ class QLearning(object):
         # e.g. self.action_matrix[0][12] = 5
         self.action_matrix = np.loadtxt(path_prefix + "action_matrix.txt")
 
-        # TODO: Fetch actions. These are the only 7 possible actions the system can take.
+        # Fetch actions. These are the only 7 possible actions the system can take.
         # self.actions is an array of dictionaries where the row index corresponds
         # to the action number, and the value has the following form:
         # { dumbbell: "red", block: 1}
@@ -47,7 +46,7 @@ class QLearning(object):
 
     # Reference: https://stackoverflow.com/questions/33686747/save-a-list-to-a-txt-file
     def save_q_matrix(self, q_matrix, agent):
-        # TODO: You'll want to save your q_matrix to a file once it is done to
+        # Save your q_matrix to a file once it is done to
         # avoid retraining
 
         # Write the Q-matrix to a .txt

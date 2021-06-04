@@ -33,7 +33,7 @@ class QLearningTraining(object):
         self.q_matrix_msg_a = QMatrix()
         self.q_matrix_msg_b = QMatrix()
 
-        # TODO: For ease of use in training, we'll store the Q-matrices in a numpy array
+        # For ease of use in training, we'll store the Q-matrices in a numpy array
         self.q_matrix_arr_a = np.zeros((128,7))
         self.q_matrix_arr_b = np.zeros((128,7))
 
@@ -53,7 +53,7 @@ class QLearningTraining(object):
         # Keep track of new state
         self.new_state = new_state
 
-        # TODO: Move the robot according to the current action
+        # Move the robot according to the current action
         self.complete_task_or_door(self.current_action)
         
 
@@ -96,8 +96,7 @@ class QLearningTraining(object):
 
     def update_q_matrix(self, data):
         # data.reward receives the reward
-        # TODO: Same reward function between both robots, b/c fully cooperative?
-        # Or use different rewards to validate need for 2 Q-matrices?
+        # Same reward function between both robots, b/c fully cooperative
 
         # Discount factor
         gamma = 0.8
