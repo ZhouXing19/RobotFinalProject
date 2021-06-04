@@ -12,6 +12,17 @@ from nav_msgs.msg import Odometry
 
 import moveit_commander
 
+path_prefix = os.path.dirname(__file__) + "/action_states/"
+
+action_dict = {0: "close red door",
+1: "close yellow door",
+2: "close blue door",
+3: "close green door",
+4: "hang bears",
+5: "dumbbells",
+6: "dancing"}
+
+
 NOT_TURNED = "not turned"
 MOVING_TO_BLOCKER = "moving to BLOCKER"
 REACHED_BLOCKER = "moved to BLOCKER"
@@ -32,19 +43,19 @@ COLOR_BOUNDS = {
 }
 
 
-class demoLockDoors(object):
+class Actions_rb2(object):
 
     def __init__(self, init_state=NOT_TURNED):
 
         self.initialized = False
-        rospy.init_node('demoLockDoors')
+        rospy.init_node('Actions_rb2')
 
         self.image_sub = rospy.Subscriber('camera/rgb/image_raw', Image, self.image_callback)
         self.scan_sub = rospy.Subscriber("/scan", LaserScan, self.scan_callback)
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)
 
         # Minimum distance in front of blocker and block
-        self.__goal_dist_in_front__blocker = 0.19
+        self.__goal_dist_in_front__blocker = 0.20
         self.__prop = 0.15
 
         rospy.sleep(3)
@@ -71,15 +82,88 @@ class demoLockDoors(object):
 
         self.scan_max = None
 
-        if self.initialized == False:
-            self.initialize_move_group()
-        
         self.robot_status = init_state
 
         # Now everything is initialized
 
-        print("initalized!!!13333")
+        self.action_matrix = np.loadtxt(path_prefix + "action_matrix.txt")
+
+        # Import qmatrix, action matrix and actions
+        # import qmatrix
+        self.qmatrix = self.read_q_matrix('a')
+
+        # create an empty action list of the optimal order of tasks
+        self.action_list = []
+
+        # Split the ordering of tasks into robot A and robot B tasks,
+        # for the purposes of the demo
+        # (As is probably known by now, our demo isn't collaborative)
+        self.action_list_a = []
+        self.action_list_b = []
+
+        # Get the action sequence for robot a and robot b
+        self.read_matrix()
+
         self.initialized = True
+
+    def read_matrix(self):
+        # initialize state to 0
+        final_state = False
+        curr_state = 0
+
+        # while the reward of 100 hasn't been found:
+        # find the next action
+        while not final_state:
+            # create an array of possible actions at the state and chose the action with the highest reward
+            poss_actions = self.qmatrix[curr_state]
+            next_action = np.argmax(poss_actions)
+
+            # add the action to our action list
+            self.action_list.append(next_action)
+
+            # if the reward for this action is 100, we are done
+            if int(self.qmatrix[curr_state][next_action]) == 100:
+                final_state = True
+
+            # calculate the next state of the robot after perfoming the previous action
+            curr_state = np.where(self.action_matrix[curr_state] == next_action)[0][0]
+
+        print("action list:")
+        print(self.action_list)
+
+        for action in self.action_list:
+            if action >= 4:
+                self.action_list_a.append(action)
+            else:
+                self.action_list_b.append(action)
+        
+        print("a list:")
+        for i in self.action_list_a:
+            print(f"{action_dict[i]}", end=', ')
+
+        print()
+        
+        print("b list:")
+        for i in self.action_list_b:
+            print(f"{action_dict[i]}", end=', ')
+        
+        return
+
+
+    def read_q_matrix(self, agent):
+        # Save the Q-matrix as a 2D float array
+        q_matrix_arr = []
+
+        # Read in the .txt file
+        with open(os.path.dirname(__file__) + '/q_matrix_' + agent + '.txt','r') as f:
+            for line in f.readlines():
+                # The code below is messy...
+                # ...but it converts all those string arrays in the .txt to float arrays
+                # (We could've just used JSON. We were devoted to .txt though)
+                q_matrix_arr.append([float(x) for x in line[0:-1].split(', ')])
+
+        return q_matrix_arr
+
 
     def scan_callback(self, data):
         if not self.initialized:
@@ -124,7 +208,6 @@ class demoLockDoors(object):
         
         return ang_v, lin_v
         
-
     def pub_vel(self, ang_v=0.0, lin_v=0.0):
         """ Publish a twist to the cmd_vel channel """
 
@@ -136,13 +219,11 @@ class demoLockDoors(object):
 
     def stop_robot(self, period=1):
         self.pub_vel(0.0, 0.0)
-        rospy.sleep(period)
+        rospy.sleep(period)  
     
-    
-    
-    def step_back(self):
+    def step_back(self, period=6):
         self.pub_vel(0.0, -0.50)
-        rospy.sleep(6)
+        rospy.sleep(period)
         self.stop_robot()
         print("=====stepped_back=====")
 
@@ -151,14 +232,14 @@ class demoLockDoors(object):
         rospy.sleep(12)
         self.stop_robot(3)
         self.pub_vel(0.0, 0.1)
-        rospy.sleep(13)
+        rospy.sleep(11)
         self.stop_robot(3)
         print("end of first_rush")
         self.robot_status = next_status
     
     def second_rush(self, next_status=FINISHED_SECOND_RUSHING):
         self.pub_vel(0.0,0.1)
-        rospy.sleep(15)
+        rospy.sleep(16)
         self.stop_robot()
         print("end of second_rush")
         self.robot_status = next_status
@@ -179,13 +260,21 @@ class demoLockDoors(object):
         rospy.sleep(3)
         self.robot_status = next_status
     
+    def turn_a_degree(self, degree):
+        euler = (degree / 180) * 3.14
+        default_ang_speed = 0.157 
+        self.pub_vel(default_ang_speed, 0.0)
+        rospy.sleep(euler/default_ang_speed)
+        self.stop_robot()
+        rospy.sleep(3)
+
     def initialize_move_group(self):
         """ Initialize the robot arm & gripper position so it can grab onto
         the dumbbell """
 
         # Set arm and gripper joint goals and move them
-        arm_joint_goal = [0.0, 0.65, 0.15, -0.9]
-        gripper_joint_goal = [0.015, 0.015]
+        arm_joint_goal = [0.0, 0.725, 0.045, -0.8]
+        gripper_joint_goal = [0.016, 0.016]
         self.move_group_arm.go(arm_joint_goal, wait=True)
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
         self.move_group_arm.stop()
@@ -199,30 +288,14 @@ class demoLockDoors(object):
             return 
 
         # Set arm and gripper joint goals and move them  
-
-        
         arm_joint_goal = [0.0, 0.05, -0.45, -0.1]
         gripper_joint_goal = [0.004, 0.004]
-
-        print("===== lift1 ====")
-        
         self.move_group_gripper.go(gripper_joint_goal, wait=True)
-        print("===== lift2 ====")
         rospy.sleep(1.2)
-
-        print("===== lift3 ====")
         self.move_group_arm.go(arm_joint_goal, wait=True)
-
-        print("===== lift4 ====")
-
         self.move_group_gripper.stop()
-        print("===== lift5 ====")
         self.move_group_arm.stop()
-
-        print("===== lift6 ====")
         rospy.sleep(1)
-
-        print("===== lift7 ====")
         
 
         # After the robot grapped the blockers, it's time to identify the blocks
@@ -327,7 +400,7 @@ class demoLockDoors(object):
             else:
                 
                 # Define k_p for proportional control            
-                k_p = 1.0 / 1000.0
+                k_p = 1.0 / 2000.0
 
                 # Slowly turn the head, so that the color center 
                 #   would be at the center of the camera
@@ -345,6 +418,14 @@ class demoLockDoors(object):
         if not self.initialized:
             return
         if self.robot_status == NOT_TURNED:
+            self.step_back(7)
+            self.turn_a_90()
+            self.initialize_move_group()
+            # # origin -> arch
+            self.pub_vel(0, 0.5)
+            rospy.sleep(8)
+            self.stop_robot()
+            print("====== arrived at arch =====")
             self.pub_vel(ang_v = 0.0, lin_v = 0.5)
             rospy.sleep(2.5)
             self.stop_robot()
@@ -377,19 +458,21 @@ class demoLockDoors(object):
             self.drop_blocker(next_status=DROPPED_BLOCKER)
         elif self.robot_status == DROPPED_BLOCKER:
             print("====drop===")
+            # arch -> origin
             self.step_back()
+            self.turn_a_degree(120)
+            self.robot_status = NOT_TURNED
     
     def run(self):
         r = rospy.Rate(10)
-
         while not rospy.is_shutdown():
-
+            self.lock_one_door()
             r.sleep()
 
 if __name__ == '__main__':
     print("running")
     try:
-        node = demoLockDoors()
+        node = Actions_rb2()
         node.run()
     except rospy.ROSInterruptException:
         pass

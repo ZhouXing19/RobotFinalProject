@@ -11,3 +11,8 @@ from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 
 import moveit_commander
+
+'''
+close green door, close blue door, close red door, close yellow door, done
+'''
+
