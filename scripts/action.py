@@ -1,9 +1,10 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import rospy, sys, os
 
 # Path of directory on where this file is located
-# path_prefix = os.path.dirname(__file__) + "/action_states/"
-print("starting")
+path_prefix = os.path.dirname(__file__) + "/action_states/"
 
 class Actions(object):
 
@@ -11,9 +12,8 @@ class Actions(object):
 
         rospy.init_node("Actions")
         rospy.sleep(1)
-        print("initialized node")
 
-        self.action_matrix = np.loadtxt(path_prefix + "/action_states/action_matrix.txt")
+        self.action_matrix = np.loadtxt(path_prefix + "action_matrix.txt")
 
         # Import qmatrix, action matrix and actions
         # import qmatrix
@@ -29,7 +29,7 @@ class Actions(object):
         q_matrix_arr = []
 
         # Read in the .txt file
-        with open(os.path.dirname(__file__) + 'q_matrix_' + agent + '.txt','r') as f:
+        with open(os.path.dirname(__file__) + '/q_matrix_' + agent + '.txt','r') as f:
             for line in f.readlines():
                 # The code below is messy...
                 # ...but it converts all those string arrays in the .txt to float arrays
@@ -61,11 +61,13 @@ class Actions(object):
             # calculate the next state of the robot after perfoming the previous action
             curr_state = np.where(self.action_matrix[curr_state] == next_action)[0][0]
 
+        print("action list:")
         print(self.action_list)
 
     def run(self):
         self.read_q_matrix('a')
         self.read_matrix()
+        print("done")
             
 # run our node and keep rospy spinnning
 if __name__ == "__main__":
