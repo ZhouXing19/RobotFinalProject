@@ -1,0 +1,2 @@
+int16 task_or_door
+int16 is_complete
