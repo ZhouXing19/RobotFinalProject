@@ -108,7 +108,7 @@ class QLearningTraining(object):
         # 2 Q-functions, 1 for each learning agent (robot), each dependent on actions of both robots
         # Full equation: Q_x = (1 - alpha) * Q_x + alpha * (reward + gamma * Nash(s, a, b))
         # 1 - alpha * Q_x = 0 when alpha = 1, so that is taken out below
-        Q_a = alpha * (data.reward + gamma * max(self.q_matrix_arr_a[self.new_state]) * max(self.q_matrix_arr_b[self.new_state]))
+        Q_a = alpha * (data.reward + gamma * max(self.q_matrix_arr_a[self.new_state])) # * max(self.q_matrix_arr_b[self.new_state])
         Q_b = alpha * (data.reward + gamma * max(self.q_matrix_arr_b[self.new_state]) * max(self.q_matrix_arr_a[self.new_state]))
 
 
@@ -151,7 +151,6 @@ class QLearningTraining(object):
         # Algo has converged if 
         # 1) the last 100 q-value differences are below the plateau threshold
         # 2) we have iterated at least 10000 times 
-        # TODO: debugging
         if len(self.q_history_a) > 10000 and max(self.q_history_a[-100:]) < max_diff:
             self.q_learning.save_q_matrix(self.q_matrix_arr_a, "a")
             print("A Converged!")

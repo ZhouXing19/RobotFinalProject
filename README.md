@@ -23,3 +23,21 @@ We will explore the collaboration/competition of two robots to finish tasks in a
 (Wait until you see "You can start planning now!!")
 (4th window) $ rosrun escapebots demopickup.py
 ```
+
+## Project Description
+
+### Goal
+
+### Main Components
+
+## System Architecture
+
+### Algorithm
+
+### Code Location
+
+## Challenges
+
+## Future Work
+
+## Takeaways
