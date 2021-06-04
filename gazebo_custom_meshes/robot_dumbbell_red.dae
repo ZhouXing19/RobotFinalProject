@@ -11,14 +11,14 @@
       <profile_COMMON>
         <technique sid="standard">
           <lambert>
-          <emission>
-              <color sid="emission">0.331452  0.883871 0.743992 1.000000</color>
+            <emission>
+              <color sid="emission">0.500000  0.000000 0.000000 1.000000</color>
             </emission>
             <ambient>
-              <color sid="ambient">0.227419  0.606452 0.510476 1.000000</color>
+              <color sid="ambient">0.500000  0.000000 0.000000 1.000000</color>
             </ambient>
             <diffuse>
-              <color sid="diffuse">0.145599  0.388263 0.326818 1.000000</color>
+              <color sid="diffuse">0.750000  0.400000 0.400000 1.000000</color>
             </diffuse>
             <transparent opaque="RGB_ZERO">
               <color sid="transparent">0.000000  0.000000 0.000000 1.000000</color>
