@@ -96,7 +96,8 @@ class QLearningTraining(object):
 
     def update_q_matrix(self, data):
         # data.reward receives the reward
-        # Same reward function between both robots, b/c fully cooperative
+        # TODO: Same reward function between both robots, b/c fully cooperative?
+        # Or use different rewards to validate need for 2 Q-matrices?
 
         # Discount factor
         gamma = 0.8
